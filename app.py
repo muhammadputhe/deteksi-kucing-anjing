@@ -4,7 +4,7 @@ from ultralytics import YOLO
 
 st.set_page_config(page_title="Kucing atau Anjing", page_icon="🐾", layout="centered")
 
-MODEL_PATH = "model/Haikal_Laporan_4.pt"
+MODEL_PATH = "model/Haikal_Laporan 4.pt"
 LABELS = {"cats": "Kucing", "dogs": "Anjing"}  # kelas "Air" sengaja diabaikan
 
 CSS = """
