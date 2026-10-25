@@ -25,8 +25,14 @@ CSS = """
     --surface: #FFFFFF;
     --soft: #F5F7FC;
 }
-html, body, [class*="st-"], button, input, textarea {
+html, body, .stApp, .stMarkdown, .stText, p, h1, h2, h3, h4,
+button, input, textarea, label {
     font-family: 'Manrope', sans-serif;
+}
+/* Keep Streamlit's own icon font intact (upload, sidebar controls, etc.). */
+[data-testid="stIconMaterial"], [data-testid="stIconMaterial"] span,
+.material-symbols-rounded, .material-icons {
+    font-family: 'Material Symbols Rounded', 'Material Icons' !important;
 }
 .stApp { background: #F6F8FC; color: var(--ink); }
 #MainMenu, footer { visibility: hidden; }
@@ -128,6 +134,12 @@ header[data-testid="stHeader"] { background: rgba(246,248,252,0.85); }
     color:#344054; font-weight:700;
 }
 [data-testid="stImage"] img { border-radius:14px; }
+[data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] {
+    align-items: stretch;
+}
+@media (max-width: 600px) {
+    [data-testid="stHorizontalBlock"] { gap: .8rem; }
+}
 [data-testid="stExpander"] {
     border:1px solid #E7EAF2; border-radius:12px; background:#FFFFFF;
 }
@@ -135,11 +147,28 @@ header[data-testid="stHeader"] { background: rgba(246,248,252,0.85); }
     border-radius:11px; font-weight:700; min-height:42px;
 }
 div[data-testid="stProgress"] > div > div { background-color:#4263EB; }
-@media (max-width: 700px) {
-    .block-container { padding-top:1rem; }
-    .hero { padding:22px; }
-    .hero:after { right:8px; top:20px; font-size:60px; }
-    .panel { padding:16px; }
+@media (max-width: 900px) {
+    .block-container { padding: 1rem 1rem 2rem; }
+    .hero { padding: 24px; border-radius: 19px; }
+    .hero h1 { font-size: 30px; }
+    .hero:after { right: 10px; top: 20px; font-size: 62px; }
+    .panel { padding: 17px; }
+    .metric-card { padding: 14px; }
+}
+@media (max-width: 600px) {
+    .block-container { padding: .75rem .75rem 1.5rem; }
+    .hero { padding: 20px 18px; border-radius: 16px; }
+    .hero h1 { font-size: 26px; letter-spacing: -.7px; }
+    .hero p { font-size: 13px; max-width: 100%; }
+    .hero:after { right: 7px; top: 12px; font-size: 46px; }
+    .hero-kicker { font-size: 9px; letter-spacing: .4px; }
+    .panel { padding: 15px; border-radius: 16px; }
+    .metric-card { min-height: 88px; padding: 12px; }
+    .metric-value { font-size: 18px; }
+    .metric-label { font-size: 11px; }
+    .sidebar-brand { padding-bottom: 16px; }
+    [data-testid="stFileUploaderDropzone"] { padding: 12px; }
+    .footer { line-height: 1.6; padding: 20px 8px 0; }
 }
 </style>
 """
@@ -231,9 +260,9 @@ if page == "Tentang Model":
 st.markdown(
     """
     <div class="hero">
-      <span class="hero-kicker">AI-POWERED IMAGE DETECTION</span>
+      <span class="hero-kicker">DETEKSI HEWAN</span>
       <h1>Kenali hewan dalam<br>sekali unggah.</h1>
-      <p>Unggah foto kucing atau anjing dan biarkan model AI menganalisis gambar. Hasil deteksi ditampilkan dengan kotak objek dan tingkat keyakinan.</p>
+      <p>Unggah foto kucing atau anjing untuk mendapatkan hasil deteksi, kotak objek, dan tingkat keyakinan.</p>
     </div>
     """,
     unsafe_allow_html=True,
@@ -288,7 +317,7 @@ with left:
         label_visibility="collapsed",
     )
     st.markdown(
-        '<div class="drop-hint">Format yang didukung: JPG, JPEG, PNG<br>Gunakan gambar yang jelas agar hasil deteksi lebih optimal.</div>',
+        '<div class="drop-hint">Format file: JPG, JPEG, atau PNG<br>Gunakan foto yang jelas agar hasil deteksi lebih baik.</div>',
         unsafe_allow_html=True,
     )
     if file is not None:
