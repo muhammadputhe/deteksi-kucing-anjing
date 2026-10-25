@@ -34,7 +34,42 @@ button, input, textarea, label {
 .material-symbols-rounded, .material-icons {
     font-family: 'Material Symbols Rounded', 'Material Icons' !important;
 }
-.stApp { background: #F6F8FC; color: var(--ink); }
+.stApp {
+    background:
+        radial-gradient(ellipse at 8% 8%, rgba(206, 222, 255, .52) 0, rgba(206, 222, 255, 0) 34%),
+        radial-gradient(ellipse at 94% 36%, rgba(224, 235, 255, .72) 0, rgba(224, 235, 255, 0) 30%),
+        linear-gradient(145deg, #F8FAFF 0%, #F0F5FF 48%, #F8FAFF 100%);
+    color: var(--ink);
+    position: relative;
+}
+/* Decorative paw prints stay subtle and never block controls. */
+.stApp::before, .stApp::after {
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    color: #4263EB;
+    opacity: .055;
+    line-height: 1;
+}
+.stApp::before {
+    content: "🐾";
+    font-size: 150px;
+    top: 16%;
+    right: 2.5%;
+    transform: rotate(-18deg);
+}
+.stApp::after {
+    content: "🐾";
+    font-size: 112px;
+    bottom: 7%;
+    left: 19%;
+    transform: rotate(20deg);
+}
+.block-container, [data-testid="stSidebar"] {
+    position: relative;
+    z-index: 1;
+}
 #MainMenu, footer { visibility: hidden; }
 header[data-testid="stHeader"] { background: rgba(246,248,252,0.85); }
 .block-container { max-width: 1320px; padding-top: 1.5rem; padding-bottom: 3rem; }
@@ -119,13 +154,13 @@ header[data-testid="stHeader"] { background: rgba(246,248,252,0.85); }
 }
 .empty-state {
     padding:22px; border:1px dashed #D5DBE8; border-radius:16px;
-    text-align:center; color:#667085; background:#FAFBFE; line-height:1.7;
+    text-align:center; color:#667085; background:rgba(255,255,255,.78); line-height:1.7;
 }
 .footer {
     text-align:center; color:#98A2B3; font-size:11px; padding-top:28px;
 }
 [data-testid="stFileUploaderDropzone"] {
-    background:#FAFBFF; border:1.5px dashed #C8D2EA; border-radius:15px;
+    background:rgba(255,255,255,.82); border:1.5px dashed #C8D2EA; border-radius:15px;
     padding:18px; transition:all .2s ease;
 }
 [data-testid="stFileUploaderDropzone"]:hover { border-color:#4263EB; background:#F5F7FF; }
@@ -169,6 +204,8 @@ div[data-testid="stProgress"] > div > div { background-color:#4263EB; }
     .sidebar-brand { padding-bottom: 16px; }
     [data-testid="stFileUploaderDropzone"] { padding: 12px; }
     .footer { line-height: 1.6; padding: 20px 8px 0; }
+    .stApp::before { font-size: 82px; top: 12%; right: -8px; }
+    .stApp::after { font-size: 64px; bottom: 4%; left: 2%; }
 }
 </style>
 """
