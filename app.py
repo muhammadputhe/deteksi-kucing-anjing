@@ -109,7 +109,7 @@ def classifier_predict(image, model):
     if pred.size != 2:
         raise ValueError(f"Model H5 menghasilkan {pred.size} output, seharusnya 2 kelas (anjing dan kucing).")
     # Pastikan urutan ini sama dengan urutan kelas saat training model.
-    labels = ["Anjing", "Kucing"]
+    labels = ["Kucing", "Anjing"]
     order = np.argsort(pred)[::-1]
     return [(labels[int(i)], float(pred[int(i)])) for i in order]
 
