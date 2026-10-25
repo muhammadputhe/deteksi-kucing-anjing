@@ -139,7 +139,7 @@ def confidence_rows(items):
     return "".join(rows)
 
 def footer():
-    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary | 2408108010065</b><br>Proyek UTS Pemrograman Big Data · Universitas Syiah Kuala</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>Proyek UTS Pemrograman Big Data | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
 
 def go(step):
     st.session_state.step = step
