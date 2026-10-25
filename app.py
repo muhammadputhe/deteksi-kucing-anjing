@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 ROOT = Path(__file__).resolve().parent
-MODEL_PATH = ROOT / "model" / "Haikal_Laporan_4.pt"
+MODEL_PATH = ROOT / "model" / "Haikal_Laporan 4.pt"
 BACKGROUND_PATH = ROOT / "background_pawscan.png"
 LABELS = {"cats": "Kucing", "dogs": "Anjing"}
 
