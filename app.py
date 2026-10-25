@@ -1,4 +1,3 @@
-import base64
 import io
 from pathlib import Path
 
@@ -7,207 +6,121 @@ import streamlit as st
 from PIL import Image, ImageOps
 
 st.set_page_config(
-    page_title="PawScan | Klasifikasi & Deteksi",
+    page_title="PawScan | Animal Recognition",
     page_icon="🐾",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 ROOT = Path(__file__).resolve().parent
-YOLO_PATH = ROOT / "model" / "Haikal_Laporan_4.pt"
-CLASSIFIER_PATH = ROOT / "Haikal_Laporan 2 (1).h5"
+YOLO_PATH = ROOT / "model" / "Haikal_Laporan 4.pt"
+CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
+IMAGE_SIZE = (224, 224)
 
-# Model H5 memiliki input 224x224 RGB dan output 3 kelas.
-# Nama kelas asli tidak tersimpan di file H5; atur label sesuai urutan
-# class_indices dari proses training agar prediksi diberi nama yang benar.
-CLASSIFIER_IMAGE_SIZE = (224, 224)
-
-
-def image_data_uri(path):
+# PawScan visual identity: navy, blue, white, and soft lavender.
+def bg_uri(path):
+    import base64
     if not path.exists():
         return ""
     encoded = base64.b64encode(path.read_bytes()).decode("utf-8")
     mime = "image/jpeg" if path.suffix.lower() in (".jpg", ".jpeg") else "image/png"
     return f"data:{mime};base64,{encoded}"
 
-
-desktop_bg = image_data_uri(DESKTOP_BG_PATH)
-mobile_bg = image_data_uri(MOBILE_BG_PATH)
-
+desktop_bg = bg_uri(DESKTOP_BG_PATH)
+mobile_bg = bg_uri(MOBILE_BG_PATH)
 if desktop_bg:
-    background_css = f"""
-        background-color: #F5F8FF;
-        background-image:
-            linear-gradient(rgba(246,249,255,.48), rgba(246,249,255,.50)),
-            url("{desktop_bg}");
-        background-size: cover;
-        background-position: center top;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-    """
+    bg_css = f"""background-color:#F5F8FF;background-image:linear-gradient(rgba(246,249,255,.48),rgba(246,249,255,.50)),url("{desktop_bg}");background-size:cover;background-position:center top;background-attachment:fixed;background-repeat:no-repeat;"""
 else:
-    background_css = "background: linear-gradient(145deg,#F8FAFF,#EAF1FF,#F8FAFF);"
-
-mobile_background_rule = ""
+    bg_css = "background:linear-gradient(145deg,#F8FAFF,#EAF1FF,#F5F0FF);"
+mobile_rule = ""
 if mobile_bg:
-    mobile_background_rule = f"""
-    @media (max-width: 600px) {{
-        .stApp {{
-            background-image:
-                linear-gradient(rgba(246,249,255,.48), rgba(246,249,255,.52)),
-                url("{mobile_bg}") !important;
-            background-size: cover !important;
-            background-position: center top !important;
-            background-attachment: scroll !important;
-            background-repeat: no-repeat !important;
-        }}
-    }}
-    """
+    mobile_rule = f"""@media(max-width:600px){{.stApp{{background-image:linear-gradient(rgba(246,249,255,.48),rgba(246,249,255,.52)),url("{mobile_bg}")!important;background-size:cover!important;background-position:center top!important;background-attachment:scroll!important;background-repeat:no-repeat!important;}}}}"""
 
-CSS = f"""
+st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-html, body, .stApp, p, h1, h2, h3, h4, button, input, textarea, label {{
-    font-family: 'Manrope', sans-serif;
-}}
-[data-testid="stIconMaterial"], .material-symbols-rounded, .material-icons {{
-    font-family: 'Material Symbols Rounded', 'Material Icons' !important;
-}}
-.stApp {{ {background_css} color:#172033; }}
-[data-testid="stAppViewContainer"], [data-testid="stMain"],
-[data-testid="stMainBlockContainer"] {{ background:transparent !important; }}
-#MainMenu, footer {{ visibility:hidden; }}
-header[data-testid="stHeader"] {{ background:transparent; }}
-.block-container {{ max-width:1360px; padding:1.5rem 2rem 2.5rem; }}
-
-[data-testid="stSidebar"] {{ background:#10182B; border-right:1px solid #26334D; }}
-[data-testid="stSidebar"] * {{ color:#E8EEFF; }}
-[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {{ color:#B7C3DD; }}
-.brand {{ display:flex; align-items:center; gap:12px; padding:8px 0 24px; }}
-.brand-icon {{ background:#4263EB; border-radius:14px; padding:10px; font-size:24px; line-height:1.2; }}
-.brand-name {{ color:white; font-size:21px; font-weight:800; }}
-.brand-sub {{ color:#B7C3DD; font-size:11px; }}
-.sidebar-label {{ color:#8998B8; font-size:10px; font-weight:800; letter-spacing:1.5px; margin:15px 0 8px; }}
-.tip {{ border:1px solid #2A3957; border-radius:13px; background:#17223A; color:#B7C3DD; padding:14px; font-size:12px; line-height:1.7; margin-top:20px; }}
-.tip strong {{ color:white; }}
-
-.hero {{ position:relative; overflow:hidden; padding:30px; border-radius:22px; color:white; background:linear-gradient(120deg,#172554 0%,#2947C7 58%,#4263EB 100%); box-shadow:0 15px 38px rgba(41,71,199,.16); }}
-.hero h1 {{ color:white; font-size:clamp(27px,3.3vw,42px); line-height:1.2; font-weight:800; letter-spacing:-1px; margin:12px 0; }}
-.hero p {{ color:#E0E8FF; font-size:14px; line-height:1.8; max-width:760px; }}
-.hero-kicker {{ display:inline-block; border:1px solid rgba(255,255,255,.28); background:rgba(255,255,255,.10); border-radius:99px; padding:6px 11px; font-size:10px; font-weight:800; letter-spacing:.7px; }}
-.hero-decoration {{ position:absolute; right:25px; top:20px; font-size:72px; opacity:.15; pointer-events:none; }}
-
-.metric-card {{ background:rgba(255,255,255,.94); border:1px solid #E3E9F5; border-radius:17px; padding:18px; min-height:100px; box-shadow:0 5px 18px rgba(24,39,75,.04); }}
-.metric-label {{ color:#758096; font-size:12px; margin-bottom:8px; }}
-.metric-value {{ color:#172033; font-size:20px; font-weight:800; }}
-.metric-hint {{ color:#8994A8; font-size:11px; margin-top:6px; }}
-.panel {{ background:rgba(255,255,255,.95); border:1px solid #E3E9F5; border-radius:18px; padding:20px; min-height:82px; box-shadow:0 5px 18px rgba(24,39,75,.035); }}
-.panel-title {{ font-size:17px; font-weight:800; color:#172033; margin-bottom:5px; }}
-.panel-subtitle {{ font-size:12px; color:#758096; line-height:1.7; }}
-[data-testid="stFileUploaderDropzone"] {{ background:rgba(255,255,255,.95); border:1.5px dashed #B9C9F5; border-radius:15px; padding:14px; }}
-[data-testid="stFileUploaderDropzone"]:hover {{ border-color:#4263EB; background:#F5F7FF; }}
-[data-testid="stFileUploaderDropzone"] button {{ border-radius:10px; border:1px solid #DCE3F2; background:white; color:#2947C7; font-weight:700; }}
-[data-testid="stImage"] img {{ border-radius:14px; }}
-.result-banner {{ padding:17px; border-radius:15px; background:#EDF2FF; border:1px solid #D8E2FF; margin:12px 0 18px; }}
-.result-label {{ color:#5265A8; font-size:11px; font-weight:800; letter-spacing:1px; }}
-.result-answer {{ color:#203A9B; font-size:27px; font-weight:800; margin-top:4px; }}
-.conf-row {{ display:flex; align-items:center; gap:10px; margin:14px 0; }}
-.conf-name {{ width:100px; color:#344054; font-size:12px; font-weight:700; }}
-.conf-track {{ flex:1; height:8px; border-radius:99px; background:#E7EBF4; overflow:hidden; }}
-.conf-fill {{ height:100%; background:linear-gradient(90deg,#4263EB,#7192FF); border-radius:99px; }}
-.conf-pct {{ width:50px; text-align:right; color:#344054; font-size:12px; font-weight:800; }}
-.empty-state {{ text-align:center; padding:25px 15px; border:1px dashed #CFD8EB; border-radius:16px; background:rgba(255,255,255,.88); color:#667085; line-height:1.8; }}
-.footer {{ text-align:center; color:#8994A8; font-size:11px; padding-top:24px; }}
-.stButton button, .stDownloadButton button {{ border-radius:10px; font-weight:700; min-height:42px; }}
-@media (max-width:900px) {{
-    .block-container {{ padding:1rem 1rem 2rem; }}
-    .hero {{ padding:24px; border-radius:19px; }}
-    .panel {{ padding:16px; }}
-    .metric-card {{ padding:14px; }}
-}}
-@media (max-width:600px) {{
-    .block-container {{ padding:.7rem .7rem 1.5rem; }}
-    .hero {{ padding:20px 16px; border-radius:16px; }}
-    .hero h1 {{ font-size:26px; letter-spacing:-.6px; }}
-    .hero p {{ font-size:13px; }}
-    .hero-decoration {{ font-size:42px; right:8px; top:8px; }}
-    .hero-kicker {{ font-size:9px; }}
-    .metric-card {{ min-height:82px; padding:11px; }}
-    .metric-value {{ font-size:16px; }}
-    .metric-label {{ font-size:10px; }}
-    .panel {{ padding:14px; }}
-    [data-testid="stFileUploaderDropzone"] {{ padding:9px; }}
-    .conf-name {{ width:76px; }}
-    .footer {{ line-height:1.7; }}
-}}
-{mobile_background_rule}
+html,body,.stApp,p,h1,h2,h3,h4,button,input,textarea,label{{font-family:'Manrope',sans-serif;}}
+.stApp{{{bg_css}color:#172033;}}
+[data-testid="stAppViewContainer"],[data-testid="stMain"],[data-testid="stMainBlockContainer"]{{background:transparent!important;}}
+#MainMenu,footer{{visibility:hidden;}} header[data-testid="stHeader"]{{background:transparent;}}
+.block-container{{max-width:1220px;padding:1.5rem 2rem 2rem;}}
+.brand{{display:flex;align-items:center;gap:12px;margin:0 0 18px;}}
+.brand-icon{{background:#4263EB;border-radius:14px;padding:10px 12px;font-size:25px;line-height:1.2;box-shadow:0 8px 18px #4263eb35;}}
+.brand-name{{font-size:22px;font-weight:800;color:#172554;line-height:1.2;}}
+.brand-sub{{font-size:11px;color:#7B86A1;letter-spacing:.5px;}}
+.progress-wrap{{display:flex;gap:8px;margin:12px 0 24px;}}
+.progress-step{{flex:1;border-radius:99px;height:6px;background:#DDE5F7;}}
+.progress-step.active{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
+.step-label{{font-size:11px;color:#64708B;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px;}}
+.hero{{position:relative;overflow:hidden;padding:34px;border-radius:24px;color:white;background:linear-gradient(120deg,#172554 0%,#2947C7 58%,#4263EB 100%);box-shadow:0 16px 40px #2947c729;}}
+.hero h1{{color:white;font-size:clamp(28px,4vw,46px);line-height:1.15;font-weight:800;letter-spacing:-1px;margin:12px 0;}}
+.hero p{{color:#E0E8FF;font-size:14px;line-height:1.85;max-width:700px;}}
+.hero-kicker{{display:inline-block;border:1px solid #ffffff45;background:#ffffff15;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.8px;}}
+.hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}}
+.panel{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:20px;padding:22px;box-shadow:0 8px 26px #18274b0a;}}
+.panel-title{{font-size:18px;font-weight:800;color:#172554;margin-bottom:6px;}}
+.panel-subtitle{{font-size:12px;color:#758096;line-height:1.75;}}
+.metric-card{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:17px;padding:18px;min-height:100px;}}
+.metric-label{{color:#758096;font-size:12px;margin-bottom:8px;}}
+.metric-value{{color:#172033;font-size:19px;font-weight:800;}}
+.metric-hint{{color:#8994A8;font-size:11px;margin-top:6px;}}
+.pill{{display:inline-block;border-radius:99px;padding:7px 12px;background:#EAF0FF;color:#2947C7;font-size:11px;font-weight:800;}}
+.result-banner{{padding:18px;border-radius:16px;background:#EDF2FF;border:1px solid #D8E2FF;margin:12px 0 18px;}}
+.result-label{{color:#5265A8;font-size:11px;font-weight:800;letter-spacing:1px;}}
+.result-answer{{color:#203A9B;font-size:29px;font-weight:800;margin-top:4px;}}
+.conf-row{{display:flex;align-items:center;gap:10px;margin:13px 0;}}
+.conf-name{{width:88px;color:#344054;font-size:12px;font-weight:700;}}
+.conf-track{{flex:1;height:8px;border-radius:99px;background:#E7EBF4;overflow:hidden;}}
+.conf-fill{{height:100%;background:linear-gradient(90deg,#4263EB,#8B5CF6);border-radius:99px;}}
+.conf-pct{{width:55px;text-align:right;color:#344054;font-size:12px;font-weight:800;}}
+.empty-state{{text-align:center;padding:26px 15px;border:1px dashed #CFD8EB;border-radius:16px;background:#ffffffc9;color:#667085;line-height:1.8;}}
+.footer{{text-align:center;color:#8A65B5;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
+.stButton button,.stDownloadButton button{{border-radius:12px;font-weight:800;min-height:44px;border:0;}}
+.stButton button[kind="primary"]{{background:linear-gradient(100deg,#4263EB,#8B5CF6);color:white;}}
+[data-testid="stFileUploaderDropzone"]{{background:#fff;border:1.5px dashed #B9C9F5;border-radius:15px;padding:14px;}}
+[data-testid="stFileUploaderDropzone"]:hover{{border-color:#4263EB;background:#F5F7FF;}}
+[data-testid="stImage"] img{{border-radius:15px;}}
+div[data-baseweb="input"] input{{border-radius:10px;}}
+@media(max-width:900px){{.block-container{{padding:1rem 1rem 2rem;}}.hero{{padding:25px;}}.panel{{padding:17px;}}}}
+@media(max-width:600px){{.block-container{{padding:.7rem .7rem 1.5rem;}}.hero{{padding:21px 17px;border-radius:17px;}}.hero h1{{font-size:28px;}}.hero p{{font-size:13px;}}.hero-decoration{{font-size:45px;right:8px;top:8px;}}.panel{{padding:14px;}}.footer{{line-height:1.8;}}}}
+{mobile_rule}
 </style>
-"""
-st.markdown(CSS, unsafe_allow_html=True)
-
+""", unsafe_allow_html=True)
 
 @st.cache_resource
-def load_classifier(path_string):
-    # Import di dalam fungsi agar aplikasi deteksi YOLO tetap dapat dibuka
-    # walaupun TensorFlow belum terpasang, dengan pesan error yang jelas.
+def load_classifier(path):
     from tensorflow.keras.models import load_model
-    return load_model(path_string, compile=False)
-
+    return load_model(path, compile=False)
 
 @st.cache_resource
-def load_yolo(path_string):
+def load_yolo(path):
     from ultralytics import YOLO
-    return YOLO(path_string)
+    return YOLO(path)
 
+def image_to_rgb(file):
+    return ImageOps.exif_transpose(Image.open(file)).convert("RGB")
 
-def confidence_rows(items, name_width=100):
-    html = []
-    for name, confidence in items:
-        pct = max(0.0, min(100.0, float(confidence) * 100))
-        html.append(
-            f'<div class="conf-row"><span class="conf-name" style="width:{name_width}px">{name}</span>'
-            f'<span class="conf-track"><span class="conf-fill" style="width:{pct:.1f}%;display:block"></span></span>'
-            f'<span class="conf-pct">{pct:.1f}%</span></div>'
-        )
-    return "".join(html)
-
-
-def image_to_rgb(uploaded_file):
-    return ImageOps.exif_transpose(Image.open(uploaded_file)).convert("RGB")
-
-
-def classifier_predict(image, model, class_names):
-    resized = image.resize(CLASSIFIER_IMAGE_SIZE)
+def classifier_predict(image, model):
+    resized = image.resize(IMAGE_SIZE)
     arr = np.asarray(resized, dtype=np.float32) / 255.0
-    batch = np.expand_dims(arr, axis=0)
-    pred = np.asarray(model.predict(batch, verbose=0))
-    pred = pred.reshape(-1)
-    if pred.size != 3:
-        raise ValueError(
-            f"Model klasifikasi menghasilkan {pred.size} nilai, sedangkan arsitektur file ini diperkirakan memiliki 3 kelas."
-        )
-    # File H5 tidak menyimpan nama kelas dataset, jadi label diambil dari input sidebar.
+    pred = np.asarray(model.predict(np.expand_dims(arr, axis=0), verbose=0)).reshape(-1)
+    if pred.size != 2:
+        raise ValueError(f"Model H5 menghasilkan {pred.size} output, seharusnya 2 kelas (anjing dan kucing).")
+    # Pastikan urutan ini sama dengan urutan kelas saat training model.
+    labels = ["Anjing", "Kucing"]
     order = np.argsort(pred)[::-1]
-    return [(class_names[int(i)], float(pred[int(i)])) for i in order]
-
+    return [(labels[int(i)], float(pred[int(i)])) for i in order]
 
 def yolo_predict(image, model, confidence):
     names = model.names
     allowed = {"cats": "Kucing", "cat": "Kucing", "dogs": "Anjing", "dog": "Anjing"}
-    class_ids = [
-        int(idx) for idx, name in names.items()
-        if str(name).strip().lower() in allowed
-    ]
-    result = model.predict(
-        image, imgsz=640, conf=confidence,
-        classes=class_ids if class_ids else None,
-        verbose=False,
-    )[0]
+    class_ids = [int(idx) for idx, name in names.items() if str(name).strip().lower() in allowed]
+    result = model.predict(image, imgsz=640, conf=confidence,
+                           classes=class_ids if class_ids else None, verbose=False)[0]
     annotated = result.plot(line_width=3)[:, :, ::-1]
-    counts = {}
-    best = {}
+    counts, best = {}, {}
     for box in result.boxes:
         raw = str(result.names[int(box.cls)]).strip().lower()
         label = allowed.get(raw)
@@ -218,220 +131,196 @@ def yolo_predict(image, model, confidence):
         best[label] = max(best.get(label, 0.0), score)
     return annotated, counts, best
 
+def confidence_rows(items):
+    rows = []
+    for name, score in items:
+        pct = max(0.0, min(100.0, float(score) * 100))
+        rows.append(f'<div class="conf-row"><span class="conf-name">{name}</span><span class="conf-track"><span class="conf-fill" style="width:{pct:.1f}%;display:block"></span></span><span class="conf-pct">{pct:.1f}%</span></div>')
+    return "".join(rows)
 
-with st.sidebar:
-    st.markdown(
-        """
-        <div class="brand"><div class="brand-icon">🐾</div><div>
-        <div class="brand-name">PawScan</div>
-        <div class="brand-sub">Animal Recognition</div></div></div>
-        <div class="sidebar-label">NAVIGASI</div>
-        """, unsafe_allow_html=True
-    )
-    page = st.radio(
-        "Menu",
-        ["Dashboard", "Tentang Model"],
-        label_visibility="collapsed",
-    )
-    st.markdown('<div class="sidebar-label">PENGATURAN YOLO</div>', unsafe_allow_html=True)
-    yolo_conf = st.slider("Ambang keyakinan deteksi", 0.05, 0.95, 0.25, 0.05)
-    st.markdown('<div class="sidebar-label">LABEL KLASIFIKASI</div>', unsafe_allow_html=True)
-    st.caption("Sesuaikan label menurut urutan kelas saat model H5 dilatih.")
-    class_names = [
-        st.text_input("Nama kelas 1", "Kelas 1", key="class_label_1"),
-        st.text_input("Nama kelas 2", "Kelas 2", key="class_label_2"),
-        st.text_input("Nama kelas 3", "Kelas 3", key="class_label_3"),
-    ]
-    st.markdown(
-        '<div class="tip"><strong>Tips foto</strong><br>'
-        'Gunakan gambar yang jelas dan pencahayaan cukup. '
-        'Klasifikasi memilih satu kelas utama; YOLO dapat menandai beberapa objek.</div>',
-        unsafe_allow_html=True,
-    )
+def footer():
+    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary | 2408108010065</b><br>Proyek PawScan · Animal Recognition</div>', unsafe_allow_html=True)
 
+def go(step):
+    st.session_state.step = step
+    st.rerun()
 
-if page == "Tentang Model":
-    st.markdown(
-        """
-        <div class="hero"><div class="hero-decoration">🐾</div>
-        <span class="hero-kicker">PAWSCAN</span><h1>Dua jenis analisis gambar</h1>
-        <p>Klasifikasi gambar memprediksi kelas utama gambar, sedangkan deteksi objek YOLO mencari lokasi objek dan menampilkan kotak pembatas.</p></div>
-        """, unsafe_allow_html=True
-    )
-    st.write("")
-    c1, c2 = st.columns(2, gap="large")
-    with c1:
-        st.markdown(
-            '<div class="panel"><div class="panel-title">Klasifikasi gambar</div>'
-            '<div class="panel-subtitle">Model CNN dari file H5. Input model 224 × 224 piksel, RGB, dan output berjumlah 3 kelas. Nama kelas perlu disesuaikan dengan label training.</div></div>',
-            unsafe_allow_html=True
-        )
-    with c2:
-        st.markdown(
-            '<div class="panel"><div class="panel-title">Deteksi objek YOLO</div>'
-            '<div class="panel-subtitle">Menggunakan file .pt lokal untuk mendeteksi lokasi objek. Gambar hasil menampilkan kotak deteksi dan nilai confidence.</div></div>',
-            unsafe_allow_html=True
-        )
-    st.markdown('<div class="footer">PawScan · Klasifikasi gambar dan deteksi objek</div>', unsafe_allow_html=True)
-    st.stop()
+if "step" not in st.session_state:
+    st.session_state.step = 1
+if "full_name" not in st.session_state:
+    st.session_state.full_name = ""
+if "campus" not in st.session_state:
+    st.session_state.campus = ""
+if "analysis_result" not in st.session_state:
+    st.session_state.analysis_result = None
+if "analysis_mode" not in st.session_state:
+    st.session_state.analysis_mode = "Klasifikasi CNN"
 
+# Brand + four-stage progress navigation.
+st.markdown('<div class="brand"><div class="brand-icon">🐾</div><div><div class="brand-name">PawScan</div><div class="brand-sub">ANIMAL RECOGNITION · CNN + YOLO</div></div></div>', unsafe_allow_html=True)
+step = st.session_state.step
+labels = ["Intro", "Registrasi", "Analisis", "Hasil"]
+progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 5))
+st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 4 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
-st.markdown(
-    """
+if step == 1:
+    st.markdown("""
     <div class="hero"><div class="hero-decoration">🐾</div>
-    <span class="hero-kicker">KLASIFIKASI + DETEKSI OBJEK</span>
-    <h1>Satu gambar, dua cara analisis.</h1>
-    <p>Pilih klasifikasi gambar untuk memperkirakan kelas utama, atau deteksi YOLO untuk menemukan objek dan melihat kotak pembatasnya.</p></div>
-    """, unsafe_allow_html=True
-)
-st.write("")
+    <span class="hero-kicker">SMART PET RECOGNITION</span>
+    <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
+    <p>Selamat datang di PawScan! Unggah foto hewan untuk menganalisis gambar menggunakan CNN atau mendeteksi objek dengan YOLO. Ikuti empat langkah sederhana untuk melihat hasilnya.</p>
+    </div>""", unsafe_allow_html=True)
+    st.write("")
+    c1, c2, c3 = st.columns(3, gap="medium")
+    for col, num, title, desc in [
+        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus."),
+        (c2, "02", "Unggah gambar", "Pilih foto anjing atau kucing."),
+        (c3, "03", "Lihat hasil", "Baca prediksi dan ringkasan AI."),
+    ]:
+        with col:
+            st.markdown(f'<div class="panel"><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
+    st.write("")
+    if st.button("🐶 Mulai Sekarang", type="primary", use_container_width=True):
+        go(2)
 
-# Status model disajikan terpisah agar pengguna mengetahui file mana yang belum tersedia.
-classifier_ready = CLASSIFIER_PATH.exists()
-yolo_ready = YOLO_PATH.exists()
-s1, s2, s3 = st.columns(3)
-with s1:
-    st.markdown(
-        f'<div class="metric-card"><div class="metric-label">Model klasifikasi</div>'
-        f'<div class="metric-value" style="font-size:17px">{"Tersedia" if classifier_ready else "Belum tersedia"}</div>'
-        f'<div class="metric-hint">File .h5 · 3 kelas</div></div>',
-        unsafe_allow_html=True
-    )
-with s2:
-    st.markdown(
-        f'<div class="metric-card"><div class="metric-label">Model deteksi YOLO</div>'
-        f'<div class="metric-value" style="font-size:17px">{"Tersedia" if yolo_ready else "Belum tersedia"}</div>'
-        f'<div class="metric-hint">File .pt lokal</div></div>',
-        unsafe_allow_html=True
-    )
-with s3:
-    st.markdown(
-        '<div class="metric-card"><div class="metric-label">Fitur</div>'
-        '<div class="metric-value" style="font-size:17px">2 mode</div>'
-        '<div class="metric-hint">Klasifikasi dan deteksi objek</div></div>',
-        unsafe_allow_html=True
-    )
-
-st.write("")
-mode = st.radio(
-    "Pilih mode analisis",
-    ["Klasifikasi Gambar", "Deteksi Objek YOLO"],
-    horizontal=True,
-    label_visibility="visible",
-)
-st.write("")
-
-left, right = st.columns([0.95, 1.05], gap="large")
-with left:
-    st.markdown(
-        '<div class="panel"><div class="panel-title">Unggah gambar</div>'
-        '<div class="panel-subtitle">Pilih satu gambar JPG, JPEG, atau PNG untuk dianalisis.</div></div>',
-        unsafe_allow_html=True
-    )
-    uploaded = st.file_uploader(
-        "Pilih gambar", type=["jpg", "jpeg", "png"],
-        key="pawscan_image_uploader", label_visibility="collapsed",
-    )
-    image = None
-    if uploaded is not None:
-        try:
-            image = image_to_rgb(uploaded)
-            st.image(image, caption="Gambar masukan", use_container_width=True)
-        except Exception:
-            st.error("Gambar tidak dapat dibaca. Silakan pilih file gambar lain.")
-    else:
-        st.markdown(
-            '<div class="empty-state"><div style="font-size:30px">📷</div>'
-            '<strong>Menunggu gambar</strong><br>Unggah foto untuk memulai analisis.</div>',
-            unsafe_allow_html=True
-        )
-
-with right:
-    st.markdown(
-        '<div class="panel"><div class="panel-title">Hasil analisis</div>'
-        '<div class="panel-subtitle">Hasil akan muncul di sini setelah gambar dipilih.</div></div>',
-        unsafe_allow_html=True
-    )
-    if image is None:
-        st.markdown(
-            '<div class="empty-state"><div style="font-size:30px">🔎</div>'
-            '<strong>Belum ada hasil</strong><br>Pilih gambar di panel sebelah kiri.</div>',
-            unsafe_allow_html=True
-        )
-    elif mode == "Klasifikasi Gambar":
-        if not classifier_ready:
-            st.error(f"File model klasifikasi tidak ditemukan: {CLASSIFIER_PATH.name}")
-        else:
-            try:
-                with st.spinner("Memuat model klasifikasi dan menganalisis gambar..."):
-                    classifier = load_classifier(str(CLASSIFIER_PATH))
-                    predictions = classifier_predict(image, classifier, class_names)
-                top_label, top_score = predictions[0]
-                st.markdown(
-                    f'<div class="result-banner"><div class="result-label">PREDIKSI KELAS UTAMA</div>'
-                    f'<div class="result-answer">{top_label}</div>'
-                    f'<div style="color:#5265A8;font-size:12px;margin-top:5px">Skor model: {top_score:.1%}</div></div>',
-                    unsafe_allow_html=True
-                )
-                st.markdown("**Skor untuk setiap kelas**")
-                st.markdown(confidence_rows(predictions), unsafe_allow_html=True)
-                st.caption("Catatan: label kelas harus mengikuti urutan kelas saat training. Skor model bukan jaminan kebenaran prediksi.")
-            except ImportError:
-                st.error("TensorFlow belum terpasang. Jalankan `pip install tensorflow` lalu mulai ulang aplikasi.")
-            except Exception as exc:
-                st.error("Klasifikasi gagal dijalankan.")
-                with st.expander("Detail kesalahan"):
-                    st.code(str(exc))
-    else:
-        if not yolo_ready:
-            st.error(
-                "File model YOLO tidak ditemukan. Letakkan `Haikal_Laporan_4.pt` "
-                "di folder `model/` di samping app.py."
-            )
-        else:
-            try:
-                with st.spinner("YOLO sedang mendeteksi objek..."):
-                    detector = load_yolo(str(YOLO_PATH))
-                    annotated, counts, best = yolo_predict(image, detector, yolo_conf)
-                if not best:
-                    st.markdown(
-                        '<div class="empty-state"><div style="font-size:30px">🔍</div>'
-                        '<strong>Belum ada objek terdeteksi</strong><br>'
-                        'Coba gambar lain atau ubah ambang keyakinan.</div>',
-                        unsafe_allow_html=True
-                    )
+elif step == 2:
+    left, right = st.columns([1, 1.15], gap="large")
+    with left:
+        st.markdown('<div class="hero"><div class="hero-decoration">🐱</div><span class="hero-kicker">PAWSCAN MEMBER</span><h1>Halo,<br>Teman Baru!</h1><p>Lengkapi identitas singkat sebelum memulai analisis gambar.</p></div>', unsafe_allow_html=True)
+    with right:
+        st.markdown('<div class="panel"><div class="panel-title">📝 Registrasi Singkat</div><div class="panel-subtitle">Isi data berikut untuk melanjutkan ke sesi analisis.</div>', unsafe_allow_html=True)
+        full_name = st.text_input("Nama lengkap", value=st.session_state.full_name, placeholder="Masukkan nama lengkap")
+        campus = st.text_input("Nama kampus", value=st.session_state.campus, placeholder="Masukkan nama kampus")
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.write("")
+        a, b = st.columns(2)
+        with a:
+            if st.button("← Kembali", use_container_width=True):
+                go(1)
+        with b:
+            if st.button("Lanjutkan →", type="primary", use_container_width=True):
+                if not full_name.strip() or not campus.strip():
+                    st.warning("Nama lengkap dan nama kampus perlu diisi terlebih dahulu.")
                 else:
-                    ranked = sorted(best.items(), key=lambda item: item[1], reverse=True)
-                    total = sum(counts.values())
-                    st.markdown(
-                        f'<div class="result-banner"><div class="result-label">DETEKSI BERHASIL</div>'
-                        f'<div class="result-answer">{" dan ".join(k for k, _ in ranked)}</div>'
-                        f'<div style="color:#5265A8;font-size:12px;margin-top:5px">{total} objek terdeteksi</div></div>',
-                        unsafe_allow_html=True
-                    )
-                    st.markdown(confidence_rows(ranked, 75), unsafe_allow_html=True)
-                    with st.expander("Rincian jumlah objek"):
-                        for label in ["Kucing", "Anjing"]:
-                            st.write(f"**{label}:** {counts.get(label, 0)} objek")
-                st.image(annotated, caption="Gambar dengan kotak deteksi YOLO", use_container_width=True)
-                out = io.BytesIO()
-                Image.fromarray(annotated).save(out, format="PNG")
-                st.download_button(
-                    "Unduh gambar hasil deteksi",
-                    data=out.getvalue(),
-                    file_name="hasil_deteksi_pawscan.png",
-                    mime="image/png",
-                    use_container_width=True,
-                )
-            except ImportError:
-                st.error("Ultralytics belum terpasang. Jalankan `pip install ultralytics` lalu mulai ulang aplikasi.")
+                    st.session_state.full_name = full_name.strip()
+                    st.session_state.campus = campus.strip()
+                    go(3)
+
+elif step == 3:
+    st.markdown('<div class="panel"><div class="panel-title">📷 Unggah & Analisis Gambar</div><div class="panel-subtitle">Pilih metode, lalu unggah gambar anjing atau kucing yang jelas. CNN memprediksi satu kelas utama; YOLO dapat mendeteksi beberapa objek.</div></div>', unsafe_allow_html=True)
+    st.write("")
+    mode = st.radio("Pilih metode analisis", ["Klasifikasi CNN", "Deteksi Objek YOLO"], horizontal=True,
+                    index=0 if st.session_state.analysis_mode == "Klasifikasi CNN" else 1)
+    st.session_state.analysis_mode = mode
+    if mode == "Klasifikasi CNN":
+        st.caption("CNN · Model H5 · 224 × 224 RGB · kelas: Anjing dan Kucing")
+    else:
+        st.caption("YOLO · Model .pt · kotak deteksi dan confidence")
+    left, right = st.columns([1, 1], gap="large")
+    with left:
+        uploaded = st.file_uploader("Pilih gambar (JPG, JPEG, PNG)", type=["jpg", "jpeg", "png"], key="pawscan_upload")
+        image = None
+        if uploaded is not None:
+            try:
+                image = image_to_rgb(uploaded)
+                st.image(image, caption="Pratinjau gambar", use_container_width=True)
+            except Exception:
+                st.error("Gambar tidak dapat dibaca. Silakan pilih file gambar lain.")
+        else:
+            st.markdown('<div class="empty-state"><div style="font-size:36px">📸</div><b>Gambar belum dipilih</b><br>Unggah foto untuk memulai analisis.</div>', unsafe_allow_html=True)
+    with right:
+        st.markdown('<div class="panel"><div class="panel-title">Sebelum memulai</div><div class="panel-subtitle">• Gunakan foto dengan objek yang terlihat jelas.<br>• Pastikan pencahayaan cukup.<br>• Untuk CNN, satu gambar akan mendapat satu prediksi utama.<br>• Untuk YOLO, hasil bergantung pada bobot model .pt yang tersedia.</div></div>', unsafe_allow_html=True)
+        if mode == "Deteksi Objek YOLO":
+            yolo_conf = st.slider("Ambang keyakinan YOLO", 0.05, 0.95, 0.25, 0.05)
+        else:
+            yolo_conf = 0.25
+        st.write("")
+        if st.button("✨ Analisis Sekarang", type="primary", use_container_width=True, disabled=(image is None)):
+            try:
+                if mode == "Klasifikasi CNN":
+                    if not CLASSIFIER_PATH.exists():
+                        st.error(f"Model CNN tidak ditemukan: {CLASSIFIER_PATH.name}. Letakkan file best_model.h5 di folder yang sama dengan app.py.")
+                    else:
+                        with st.spinner("CNN sedang menganalisis gambar..."):
+                            model = load_classifier(str(CLASSIFIER_PATH))
+                            predictions = classifier_predict(image, model)
+                        st.session_state.analysis_result = {"mode": mode, "predictions": predictions, "image": image.copy()}
+                        go(4)
+                else:
+                    if not YOLO_PATH.exists():
+                        st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan Haikal_Laporan_4.pt di folder model/.")
+                    else:
+                        with st.spinner("YOLO sedang mendeteksi objek..."):
+                            model = load_yolo(str(YOLO_PATH))
+                            annotated, counts, best = yolo_predict(image, model, yolo_conf)
+                        st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "image": image.copy()}
+                        go(4)
+            except ImportError as exc:
+                st.error("Dependensi model belum terpasang. CNN memerlukan TensorFlow; YOLO memerlukan ultralytics.")
+                with st.expander("Detail teknis"):
+                    st.code(str(exc))
             except Exception as exc:
-                st.error("Deteksi YOLO gagal dijalankan.")
+                st.error("Analisis gagal dijalankan. Periksa file model dan dependensi.")
                 with st.expander("Detail kesalahan"):
                     st.code(str(exc))
+    st.write("")
+    if st.button("← Kembali ke Registrasi"):
+        go(2)
 
-st.markdown(
-    '<div class="footer">PawScan · Klasifikasi gambar dan deteksi objek YOLO<br>'
-    'Hasil dipengaruhi oleh model, label kelas, preprocessing, dan kualitas gambar.</div>',
-    unsafe_allow_html=True
-)
+elif step == 4:
+    result = st.session_state.analysis_result
+    if not result:
+        st.markdown('<div class="empty-state"><div style="font-size:36px">🔎</div><b>Belum ada hasil analisis</b><br>Kembali ke sesi analisis untuk mengunggah gambar.</div>', unsafe_allow_html=True)
+        if st.button("Ke sesi analisis", type="primary"):
+            go(3)
+    else:
+        st.markdown(f'<div class="hero"><div class="hero-decoration">✨</div><span class="hero-kicker">ANALISIS SELESAI</span><h1>Hasil PawScan</h1><p>Terima kasih, {st.session_state.full_name}! Berikut ringkasan hasil analisis gambar Anda.</p></div>', unsafe_allow_html=True)
+        st.write("")
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Pengguna</div><div class="metric-value">{st.session_state.full_name}</div><div class="metric-hint">{st.session_state.campus} · Metode: {result["mode"]}</div></div>', unsafe_allow_html=True)
+        st.write("")
+        left, right = st.columns([1, 1], gap="large")
+        with left:
+            if result["mode"] == "Klasifikasi CNN":
+                st.image(result["image"], caption="Gambar yang dianalisis", use_container_width=True)
+            else:
+                st.image(result["annotated"], caption="Gambar dengan kotak deteksi YOLO", use_container_width=True)
+                out = io.BytesIO()
+                Image.fromarray(result["annotated"]).save(out, format="PNG")
+                st.download_button("⬇️ Unduh gambar hasil YOLO", data=out.getvalue(), file_name="hasil_pawscan.png", mime="image/png", use_container_width=True)
+        with right:
+            if result["mode"] == "Klasifikasi CNN":
+                predictions = result["predictions"]
+                top_label, top_score = predictions[0]
+                st.markdown(f'<div class="result-banner"><div class="result-label">PREDIKSI UTAMA</div><div class="result-answer">{top_label}</div><div style="color:#5265A8;font-size:12px;margin-top:5px">Skor model: {top_score:.1%}</div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="panel-title">Perbandingan skor kelas</div>', unsafe_allow_html=True)
+                st.markdown(confidence_rows(predictions), unsafe_allow_html=True)
+                summary = f"Model CNN memprediksi gambar sebagai {top_label} dengan skor model {top_score:.1%}. "
+                summary += "Skor tertinggi menunjukkan kelas yang paling didukung model, bukan jaminan bahwa prediksi selalu benar."
+            else:
+                counts, best = result["counts"], result["best"]
+                total = sum(counts.values())
+                if best:
+                    ranked = sorted(best.items(), key=lambda item: item[1], reverse=True)
+                    st.markdown(f'<div class="result-banner"><div class="result-label">RINGKASAN DETEKSI</div><div class="result-answer">{total} objek</div><div style="color:#5265A8;font-size:12px;margin-top:5px">Dikenali: {" dan ".join(k for k, _ in ranked)}</div></div>', unsafe_allow_html=True)
+                    st.markdown(confidence_rows(ranked), unsafe_allow_html=True)
+                    summary = f"YOLO mendeteksi {total} objek. Rinciannya: {counts.get('Anjing', 0)} anjing dan {counts.get('Kucing', 0)} kucing. Nilai confidence tertinggi per kelas ditampilkan di atas."
+                else:
+                    st.warning("Tidak ada anjing atau kucing yang terdeteksi pada ambang keyakinan ini. Coba gambar lain atau turunkan ambang keyakinan pada sesi analisis.")
+                    summary = "YOLO belum menemukan objek anjing atau kucing pada gambar dengan ambang keyakinan yang digunakan."
+        st.write("")
+        st.markdown('<div class="panel"><div class="panel-title">🧾 Ringkasan Hasil</div><div class="panel-subtitle">', unsafe_allow_html=True)
+        st.write(summary)
+        st.caption("Catatan: hasil dipengaruhi kualitas gambar, data pelatihan, urutan label, dan model yang digunakan.")
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.write("")
+        c1, c2 = st.columns(2)
+        with c1:
+            if st.button("🔄 Analisis Gambar Lain", type="primary", use_container_width=True):
+                st.session_state.analysis_result = None
+                go(3)
+        with c2:
+            if st.button("⌂ Kembali ke Beranda", use_container_width=True):
+                st.session_state.analysis_result = None
+                go(1)
+
+footer()
