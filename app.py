@@ -6,23 +6,32 @@ import numpy as np
 import streamlit as st
 from PIL import Image, ImageOps
 
+ROOT = Path(__file__).resolve().parent
+ASSET_DIR = ROOT / "assets"
+MAIN_ICON_PATH = ASSET_DIR / "Main_icon.png"
+
 st.set_page_config(
     page_title="PawScan | Animal Recognition",
-    page_icon="🐾",
+    page_icon=str(MAIN_ICON_PATH) if MAIN_ICON_PATH.exists() else "🐾",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-ROOT = Path(__file__).resolve().parent
 YOLO_PATH = ROOT / "model" / "Haikal_Laporan 4.pt"
 CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
-ASSET_DIR = ROOT / "assets"
 CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
 DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
-EMPTY_STATE_PATH = ASSET_DIR / "empty_state.png"
+EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.png"
 LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
+HOME_ICON_PATH = ASSET_DIR / "beranda.png"
+ANALYSIS_ICON_PATH = ASSET_DIR / "analisis.png"
+HELP_ICON_PATH = ASSET_DIR / "bantuan.png"
+DELETE_ICON_PATH = ASSET_DIR / "hapus.png"
+SETTINGS_ICON_PATH = ASSET_DIR / "pengaturan.png"
+HISTORY_ICON_PATH = ASSET_DIR / "riwayat.png"
+DOWNLOAD_ICON_PATH = ASSET_DIR / "unduh_hasil.png"
 IMAGE_SIZE = (224, 224)
 
 # PawScan visual identity: navy, blue, white, and soft lavender.
@@ -53,7 +62,7 @@ html,body,.stApp,p,h1,h2,h3,h4,button,input,textarea,label{{font-family:'Manrope
 #MainMenu,footer{{visibility:hidden;}} header[data-testid="stHeader"]{{background:transparent;}}
 .block-container{{max-width:1220px;padding:1.5rem 2rem 2rem;}}
 .brand{{display:flex;align-items:center;gap:12px;margin:0 0 18px;}}
-.brand-icon{{background:#4263EB;border-radius:14px;padding:10px 12px;font-size:25px;line-height:1.2;box-shadow:0 8px 18px #4263eb35;}}
+.brand-icon{{width:54px;height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4263EB,#8B5CF6);border-radius:16px;padding:7px;box-shadow:0 8px 18px #4263eb35;overflow:hidden;}} .brand-icon img{{width:100%;height:100%;object-fit:contain;border-radius:10px;}}
 .brand-name{{font-size:22px;font-weight:800;color:#172554;line-height:1.2;}}
 .brand-sub{{font-size:11px;color:#7B86A1;letter-spacing:.5px;}}
 .progress-wrap{{display:flex;gap:8px;margin:12px 0 24px;}}
@@ -64,7 +73,7 @@ html,body,.stApp,p,h1,h2,h3,h4,button,input,textarea,label{{font-family:'Manrope
 .hero h1{{color:white;font-size:clamp(28px,4vw,46px);line-height:1.15;font-weight:800;letter-spacing:-1px;margin:12px 0;}}
 .hero p{{color:#E0E8FF;font-size:14px;line-height:1.85;max-width:700px;}}
 .hero-kicker{{display:inline-block;border:1px solid #ffffff45;background:#ffffff15;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.8px;}}
-.hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}}
+.hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
 .panel{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:20px;padding:22px;box-shadow:0 8px 26px #18274b0a;}}
 .panel-title{{font-size:18px;font-weight:800;color:#172554;margin-bottom:6px;}}
 .panel-subtitle{{font-size:12px;color:#758096;line-height:1.75;}}
@@ -128,7 +137,7 @@ def classifier_predict(image, model):
 
 def yolo_predict(image, model, confidence):
     names = model.names
-    allowed = {"cats": "Kucing", "cat": "Kucing", "dogs": "Anjing", "dog": "Anjing"}
+    allowed = {"cats": "Kucing", "cat": "Kucing", "kucing": "Kucing", "dogs": "Anjing", "dog": "Anjing", "anjing": "Anjing"}
     class_ids = [int(idx) for idx, name in names.items() if str(name).strip().lower() in allowed]
     result = model.predict(image, imgsz=640, conf=confidence,
                            classes=class_ids if class_ids else None, verbose=False)[0]
@@ -155,8 +164,10 @@ def show_member_card(compact=False):
     """Render the member identity using the current registration values."""
     name = escape(st.session_state.get("full_name", "PawScan Member") or "PawScan Member")
     campus = escape(st.session_state.get("campus", "") or "Kampus belum diisi")
+    main_uri = bg_uri(MAIN_ICON_PATH)
+    avatar = f'<img src="{main_uri}" alt="PawScan" style="width:100%;height:100%;object-fit:contain;padding:5px;">' if main_uri else '🐾'
     st.markdown(
-        f'<div class="member-card"><div class="member-avatar">🐾</div>'
+        f'<div class="member-card"><div class="member-avatar">{avatar}</div>'
         f'<div><div class="member-kicker">PawScan Member</div>'
         f'<div class="member-name">{name}</div>'
         f'<div class="member-campus">{campus}</div></div>'
@@ -166,7 +177,7 @@ def show_member_card(compact=False):
 
 def show_empty_illustration():
     if EMPTY_STATE_PATH.exists():
-        st.image(str(EMPTY_STATE_PATH), use_container_width=True)
+        st.image(str(EMPTY_STATE_PATH), use_container_width=True, caption=None)
     else:
         st.markdown('<div class="empty-state"><div style="font-size:36px">📸</div><b>Gambar belum dipilih</b><br>Unggah foto untuk memulai analisis.</div>', unsafe_allow_html=True)
 
@@ -178,7 +189,7 @@ def show_loading_visual(message):
         st.info(message)
 
 def footer():
-    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>Proyek UTS Pemrograman Big Data | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>AI Animal Recognition · CNN & YOLO | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
 
 def go(step):
     st.session_state.step = step
@@ -196,7 +207,9 @@ if "analysis_mode" not in st.session_state:
     st.session_state.analysis_mode = "Klasifikasi CNN"
 
 # Brand + four-stage progress navigation.
-st.markdown('<div class="brand"><div class="brand-icon">🐾</div><div><div class="brand-name">PawScan</div><div class="brand-sub">ANIMAL RECOGNITION · CNN + YOLO</div></div></div>', unsafe_allow_html=True)
+main_icon_uri = bg_uri(MAIN_ICON_PATH)
+brand_mark = f'<img src="{main_icon_uri}" alt="PawScan icon">' if main_icon_uri else '🐾'
+st.markdown(f'<div class="brand"><div class="brand-icon">{brand_mark}</div><div><div class="brand-name">PawScan</div><div class="brand-sub">ANIMAL RECOGNITION · CNN + YOLO</div></div></div>', unsafe_allow_html=True)
 step = st.session_state.step
 labels = ["Intro", "Registrasi", "Analisis", "Hasil"]
 progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 5))
@@ -211,12 +224,14 @@ if step == 1:
     </div>""", unsafe_allow_html=True)
     st.write("")
     c1, c2, c3 = st.columns(3, gap="medium")
-    for col, num, title, desc in [
-        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus."),
-        (c2, "02", "Unggah gambar", "Pilih foto anjing atau kucing."),
-        (c3, "03", "Lihat hasil", "Baca prediksi dan ringkasan AI."),
+    for col, num, title, desc, icon_path in [
+        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus.", MAIN_ICON_PATH),
+        (c2, "02", "Unggah gambar", "Pilih foto anjing atau kucing.", ANALYSIS_ICON_PATH),
+        (c3, "03", "Lihat hasil", "Baca prediksi dan ringkasan AI.", DOWNLOAD_ICON_PATH),
     ]:
         with col:
+            if icon_path.exists():
+                st.image(str(icon_path), width=42)
             st.markdown(f'<div class="panel"><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
     st.write("")
     if st.button("🐶 Mulai Sekarang", type="primary", use_container_width=True):
@@ -281,20 +296,26 @@ elif step == 3:
                     if not CLASSIFIER_PATH.exists():
                         st.error(f"Model CNN tidak ditemukan: {CLASSIFIER_PATH.name}. Letakkan file best_model.h5 di folder yang sama dengan app.py.")
                     else:
+                        loading_slot = st.empty()
+                        with loading_slot.container():
+                            show_loading_visual("AI sedang membaca gambar kamu. Mohon tunggu...")
                         with st.spinner("CNN sedang menganalisis gambar..."):
-                            show_loading_visual("AI sedang menganalisis gambar kamu")
                             model = load_classifier(str(CLASSIFIER_PATH))
                             predictions = classifier_predict(image, model)
+                        loading_slot.empty()
                         st.session_state.analysis_result = {"mode": mode, "predictions": predictions, "image": image.copy()}
                         go(4)
                 else:
                     if not YOLO_PATH.exists():
-                        st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan Haikal_Laporan_4.pt di folder model/.")
+                        st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan file Haikal_Laporan 4.pt di folder model/.")
                     else:
+                        loading_slot = st.empty()
+                        with loading_slot.container():
+                            show_loading_visual("PawScan sedang memindai objek dengan YOLO. Mohon tunggu...")
                         with st.spinner("YOLO sedang mendeteksi objek..."):
-                            show_loading_visual("PawScan sedang memindai objek dengan YOLO")
                             model = load_yolo(str(YOLO_PATH))
                             annotated, counts, best = yolo_predict(image, model, yolo_conf)
+                        loading_slot.empty()
                         st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "image": image.copy()}
                         go(4)
             except ImportError as exc:
@@ -330,14 +351,16 @@ elif step == 4:
                 st.image(result["annotated"], caption="Gambar dengan kotak deteksi YOLO", use_container_width=True)
                 out = io.BytesIO()
                 Image.fromarray(result["annotated"]).save(out, format="PNG")
-                st.download_button("⬇️ Unduh gambar hasil YOLO", data=out.getvalue(), file_name="hasil_pawscan.png", mime="image/png", use_container_width=True)
+                if DOWNLOAD_ICON_PATH.exists():
+                    st.image(str(DOWNLOAD_ICON_PATH), width=34)
+                st.download_button("Unduh gambar hasil YOLO", data=out.getvalue(), file_name="hasil_pawscan.png", mime="image/png", use_container_width=True)
         with right:
             if result["mode"] == "Klasifikasi CNN":
                 predictions = result["predictions"]
                 top_label, top_score = predictions[0]
                 icon_path = CAT_ICON_PATH if top_label == "Kucing" else DOG_ICON_PATH
                 if icon_path.exists():
-                    st.image(str(icon_path), width=100)
+                    st.image(str(icon_path), width=140)
                 else:
                     st.markdown("<div style='font-size:44px'>" + ("🐱" if top_label == "Kucing" else "🐶") + "</div>", unsafe_allow_html=True)
                 st.markdown(f'<div class="result-banner"><div class="result-label">PREDIKSI UTAMA</div><div class="result-answer">{top_label}</div><div style="color:#5265A8;font-size:12px;margin-top:5px">Skor model: {top_score:.1%}</div></div>', unsafe_allow_html=True)
