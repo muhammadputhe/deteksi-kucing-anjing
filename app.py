@@ -1,5 +1,6 @@
 import io
 from pathlib import Path
+from html import escape
 
 import numpy as np
 import streamlit as st
@@ -17,6 +18,11 @@ YOLO_PATH = ROOT / "model" / "Haikal_Laporan 4.pt"
 CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
+ASSET_DIR = ROOT / "assets"
+CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
+DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
+EMPTY_STATE_PATH = ASSET_DIR / "empty_state.png"
+LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
 IMAGE_SIZE = (224, 224)
 
 # PawScan visual identity: navy, blue, white, and soft lavender.
@@ -63,6 +69,13 @@ html,body,.stApp,p,h1,h2,h3,h4,button,input,textarea,label{{font-family:'Manrope
 .panel-title{{font-size:18px;font-weight:800;color:#172554;margin-bottom:6px;}}
 .panel-subtitle{{font-size:12px;color:#758096;line-height:1.75;}}
 .metric-card{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:17px;padding:18px;min-height:100px;}}
+.member-card{{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:linear-gradient(115deg,#EEF3FF,#F8F6FF);border:1px solid #DCE5FF;box-shadow:0 8px 24px #2947c710;margin:12px 0 18px;}}
+.member-avatar{{width:48px;height:48px;flex:0 0 48px;display:flex;align-items:center;justify-content:center;border-radius:15px;background:linear-gradient(135deg,#4263EB,#8B5CF6);color:white;font-size:24px;box-shadow:0 7px 16px #4263eb35;}}
+.member-kicker{{font-size:10px;font-weight:800;letter-spacing:1px;color:#6578B5;text-transform:uppercase;}}
+.member-name{{font-size:16px;font-weight:800;color:#172554;margin-top:2px;overflow-wrap:anywhere;}}
+.member-campus{{font-size:12px;color:#71809F;margin-top:3px;overflow-wrap:anywhere;}}
+.member-check{{margin-left:auto;color:#4965ED;font-size:22px;}}
+.analysis-loading{{text-align:center;color:#2947C7;font-weight:800;font-size:15px;padding:4px 0 12px;}}
 .metric-label{{color:#758096;font-size:12px;margin-bottom:8px;}}
 .metric-value{{color:#172033;font-size:19px;font-weight:800;}}
 .metric-hint{{color:#8994A8;font-size:11px;margin-top:6px;}}
@@ -138,6 +151,32 @@ def confidence_rows(items):
         rows.append(f'<div class="conf-row"><span class="conf-name">{name}</span><span class="conf-track"><span class="conf-fill" style="width:{pct:.1f}%;display:block"></span></span><span class="conf-pct">{pct:.1f}%</span></div>')
     return "".join(rows)
 
+def show_member_card(compact=False):
+    """Render the member identity using the current registration values."""
+    name = escape(st.session_state.get("full_name", "PawScan Member") or "PawScan Member")
+    campus = escape(st.session_state.get("campus", "") or "Kampus belum diisi")
+    st.markdown(
+        f'<div class="member-card"><div class="member-avatar">🐾</div>'
+        f'<div><div class="member-kicker">PawScan Member</div>'
+        f'<div class="member-name">{name}</div>'
+        f'<div class="member-campus">{campus}</div></div>'
+        f'<div class="member-check">✓</div></div>',
+        unsafe_allow_html=True,
+    )
+
+def show_empty_illustration():
+    if EMPTY_STATE_PATH.exists():
+        st.image(str(EMPTY_STATE_PATH), use_container_width=True)
+    else:
+        st.markdown('<div class="empty-state"><div style="font-size:36px">📸</div><b>Gambar belum dipilih</b><br>Unggah foto untuk memulai analisis.</div>', unsafe_allow_html=True)
+
+def show_loading_visual(message):
+    if LOADING_GIF_PATH.exists():
+        st.image(str(LOADING_GIF_PATH), use_container_width=True)
+        st.markdown(f'<div class="analysis-loading">{escape(message)}</div>', unsafe_allow_html=True)
+    else:
+        st.info(message)
+
 def footer():
     st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>Proyek UTS Pemrograman Big Data | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
 
@@ -208,6 +247,7 @@ elif step == 2:
 
 elif step == 3:
     st.markdown('<div class="panel"><div class="panel-title">📷 Unggah & Analisis Gambar</div><div class="panel-subtitle">Pilih metode, lalu unggah gambar anjing atau kucing yang jelas. CNN memprediksi satu kelas utama; YOLO dapat mendeteksi beberapa objek.</div></div>', unsafe_allow_html=True)
+    show_member_card(compact=True)
     st.write("")
     mode = st.radio("Pilih metode analisis", ["Klasifikasi CNN", "Deteksi Objek YOLO"], horizontal=True,
                     index=0 if st.session_state.analysis_mode == "Klasifikasi CNN" else 1)
@@ -227,7 +267,7 @@ elif step == 3:
             except Exception:
                 st.error("Gambar tidak dapat dibaca. Silakan pilih file gambar lain.")
         else:
-            st.markdown('<div class="empty-state"><div style="font-size:36px">📸</div><b>Gambar belum dipilih</b><br>Unggah foto untuk memulai analisis.</div>', unsafe_allow_html=True)
+            show_empty_illustration()
     with right:
         st.markdown('<div class="panel"><div class="panel-title">Sebelum memulai</div><div class="panel-subtitle">• Gunakan foto dengan objek yang terlihat jelas.<br>• Pastikan pencahayaan cukup.<br>• Untuk CNN, satu gambar akan mendapat satu prediksi utama.<br>• Untuk YOLO, hasil bergantung pada bobot model .pt yang tersedia.</div></div>', unsafe_allow_html=True)
         if mode == "Deteksi Objek YOLO":
@@ -242,6 +282,7 @@ elif step == 3:
                         st.error(f"Model CNN tidak ditemukan: {CLASSIFIER_PATH.name}. Letakkan file best_model.h5 di folder yang sama dengan app.py.")
                     else:
                         with st.spinner("CNN sedang menganalisis gambar..."):
+                            show_loading_visual("AI sedang menganalisis gambar kamu")
                             model = load_classifier(str(CLASSIFIER_PATH))
                             predictions = classifier_predict(image, model)
                         st.session_state.analysis_result = {"mode": mode, "predictions": predictions, "image": image.copy()}
@@ -251,6 +292,7 @@ elif step == 3:
                         st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan Haikal_Laporan_4.pt di folder model/.")
                     else:
                         with st.spinner("YOLO sedang mendeteksi objek..."):
+                            show_loading_visual("PawScan sedang memindai objek dengan YOLO")
                             model = load_yolo(str(YOLO_PATH))
                             annotated, counts, best = yolo_predict(image, model, yolo_conf)
                         st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "image": image.copy()}
@@ -274,9 +316,11 @@ elif step == 4:
         if st.button("Ke sesi analisis", type="primary"):
             go(3)
     else:
-        st.markdown(f'<div class="hero"><div class="hero-decoration">✨</div><span class="hero-kicker">ANALISIS SELESAI</span><h1>Hasil PawScan</h1><p>Terima kasih, {st.session_state.full_name}! Berikut ringkasan hasil analisis gambar Anda.</p></div>', unsafe_allow_html=True)
+        safe_name = escape(st.session_state.full_name or "Teman PawScan")
+        st.markdown(f'<div class="hero"><div class="hero-decoration">✨</div><span class="hero-kicker">ANALISIS SELESAI</span><h1>Hasil PawScan</h1><p>Terima kasih, {safe_name}! Berikut ringkasan hasil analisis gambar Anda.</p></div>', unsafe_allow_html=True)
         st.write("")
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Pengguna</div><div class="metric-value">{st.session_state.full_name}</div><div class="metric-hint">{st.session_state.campus} · Metode: {result["mode"]}</div></div>', unsafe_allow_html=True)
+        show_member_card()
+        st.caption(f"Metode analisis: {result['mode']}")
         st.write("")
         left, right = st.columns([1, 1], gap="large")
         with left:
@@ -291,6 +335,11 @@ elif step == 4:
             if result["mode"] == "Klasifikasi CNN":
                 predictions = result["predictions"]
                 top_label, top_score = predictions[0]
+                icon_path = CAT_ICON_PATH if top_label == "Kucing" else DOG_ICON_PATH
+                if icon_path.exists():
+                    st.image(str(icon_path), width=100)
+                else:
+                    st.markdown("<div style='font-size:44px'>" + ("🐱" if top_label == "Kucing" else "🐶") + "</div>", unsafe_allow_html=True)
                 st.markdown(f'<div class="result-banner"><div class="result-label">PREDIKSI UTAMA</div><div class="result-answer">{top_label}</div><div style="color:#5265A8;font-size:12px;margin-top:5px">Skor model: {top_score:.1%}</div></div>', unsafe_allow_html=True)
                 st.markdown('<div class="panel-title">Perbandingan skor kelas</div>', unsafe_allow_html=True)
                 st.markdown(confidence_rows(predictions), unsafe_allow_html=True)
