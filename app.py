@@ -262,8 +262,8 @@ elif step == 3:
     st.markdown("""
     <style>
     /* Kartu metode berukuran besar dan bisa dipilih dengan klik di mana saja. */
-    .st-key-choose_cnn_card button,
-    .st-key-choose_yolo_card button {
+    div[class*="st-key-choose_cnn_card"] button,
+    div[class*="st-key-choose_yolo_card"] button {
         width: 100% !important;
         min-height: 310px !important;
         height: 100% !important;
@@ -278,24 +278,35 @@ elif step == 3:
         display: flex !important;
         align-items: flex-start !important;
         justify-content: flex-start !important;
+        white-space: normal !important;
+        overflow: visible !important;
         transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
-    .st-key-choose_cnn_card button:hover,
-    .st-key-choose_yolo_card button:hover {
+    div[class*="st-key-choose_cnn_card"] button div,
+    div[class*="st-key-choose_yolo_card"] button div,
+    div[class*="st-key-choose_cnn_card"] button p,
+    div[class*="st-key-choose_yolo_card"] button p {
+        white-space: pre-wrap !important;
+        overflow-wrap: anywhere !important;
+        text-overflow: clip !important;
+        max-width: 100% !important;
+    }
+    div[class*="st-key-choose_cnn_card"] button:hover,
+    div[class*="st-key-choose_yolo_card"] button:hover {
         border-color: #4263EB !important;
         box-shadow: 0 14px 32px #4263eb20 !important;
         transform: translateY(-2px);
     }
-    .st-key-choose_cnn_card button p,
-    .st-key-choose_yolo_card button p {
+    div[class*="st-key-choose_cnn_card"] button p,
+    div[class*="st-key-choose_yolo_card"] button p {
         white-space: pre-wrap !important;
         text-align: left !important;
         line-height: 1.9 !important;
         font-size: 15px !important;
     }
     @media(max-width: 700px) {
-        .st-key-choose_cnn_card button,
-        .st-key-choose_yolo_card button {
+        div[class*="st-key-choose_cnn_card"] button,
+        div[class*="st-key-choose_yolo_card"] button {
             min-height: 250px !important;
             padding: 20px !important;
         }
@@ -305,6 +316,38 @@ elif step == 3:
     """, unsafe_allow_html=True)
     st.write("")
     selected_mode = st.session_state.analysis_mode
+    # Warna kartu aktif mengikuti metode yang dipilih, dan berubah setelah klik.
+    if selected_mode == "Klasifikasi CNN":
+        selected_card_css = """
+        div.st-key-choose_cnn_card button,
+        div[class*="st-key-choose_cnn_card"] button[kind="primary"],
+        div[class*="st-key-choose_cnn_card"] button[kind="secondary"] {
+            background: linear-gradient(140deg, #3157E8 0%, #6954F5 58%, #8B5CF6 100%) !important;
+            border: 2px solid #2947C7 !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 18px 38px #5365E84D, inset 0 1px 0 #FFFFFF45 !important;
+            transform: translateY(-3px);
+        }
+        div[class*="st-key-choose_cnn_card"] button p,
+        div[class*="st-key-choose_cnn_card"] button strong { color: #FFFFFF !important; }
+        div[class*="st-key-choose_cnn_card"] button:hover { filter: brightness(1.04); }
+        """
+    else:
+        selected_card_css = """
+        div.st-key-choose_yolo_card button,
+        div[class*="st-key-choose_yolo_card"] button[kind="primary"],
+        div[class*="st-key-choose_yolo_card"] button[kind="secondary"] {
+            background: linear-gradient(140deg, #087E8B 0%, #147DCC 52%, #4F65E8 100%) !important;
+            border: 2px solid #087E8B !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 18px 38px #1685B84D, inset 0 1px 0 #FFFFFF45 !important;
+            transform: translateY(-3px);
+        }
+        div[class*="st-key-choose_yolo_card"] button p,
+        div[class*="st-key-choose_yolo_card"] button strong { color: #FFFFFF !important; }
+        div[class*="st-key-choose_yolo_card"] button:hover { filter: brightness(1.04); }
+        """
+    st.markdown(f"<style>{selected_card_css}</style>", unsafe_allow_html=True)
     cnn_col, yolo_col = st.columns(2, gap="large")
     with cnn_col:
         cnn_label = ("🧠 **KLASIFIKASI CNN**  \n\n"
