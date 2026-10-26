@@ -213,7 +213,7 @@ st.markdown(f'<div class="brand"><div class="brand-icon">{brand_mark}</div><div>
 step = st.session_state.step
 labels = ["Intro", "Registrasi", "Metode", "Unggah & Analisis", "Hasil"]
 progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 6))
-st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 4 · {labels[step-1]}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
 if step == 1:
     st.markdown("""
@@ -259,34 +259,58 @@ elif step == 2:
                     go(3)
 
 elif step == 3:
-    st.markdown('<div class="hero"><span class="hero-kicker">SESI 3 · PILIH METODE</span><h1>Bagaimana kamu ingin<br><span style="color:#AFC2FF">mengenali hewan?</span></h1><p>Pilih salah satu metode di bawah. Pilihan ini akan digunakan secara otomatis pada sesi unggah dan analisis, jadi kamu tidak perlu memilih metode lagi nanti.</p></div>', unsafe_allow_html=True)
+    st.markdown("""
+    <style>
+    /* Pada sesi metode, tombol kartu menjadi area klik utama. */
+    div[data-testid="stHorizontalBlock"] div[data-testid="column"] div[data-testid="stButton"] button {
+        min-height: 225px;
+        height: auto;
+        padding: 24px 22px;
+        border-radius: 22px;
+        border: 2px solid #DCE4F5;
+        background: rgba(255,255,255,.96);
+        color: #172554;
+        text-align: left;
+        white-space: pre-wrap;
+        box-shadow: 0 8px 24px #18274b0a;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    div[data-testid="stHorizontalBlock"] div[data-testid="column"] div[data-testid="stButton"] button p {
+        white-space: pre-wrap;
+        line-height: 1.8;
+    }
+    </style>
+    <div class="hero"><span class="hero-kicker">SESI 3 · PILIH METODE</span><h1>Bagaimana kamu ingin<br><span style="color:#AFC2FF">mengenali hewan?</span></h1><p>Pilih salah satu kartu di bawah. Seluruh kartu bisa diklik, dan metode pilihanmu akan digunakan otomatis pada sesi unggah gambar.</p></div>
+    """, unsafe_allow_html=True)
     st.write("")
     selected_mode = st.session_state.analysis_mode
     cnn_col, yolo_col = st.columns(2, gap="large")
     with cnn_col:
-        cnn_border = "#4263EB" if selected_mode == "Klasifikasi CNN" else "#E3E9F5"
-        cnn_bg = "linear-gradient(145deg,#F0F5FF,#FFFFFF)" if selected_mode == "Klasifikasi CNN" else "rgba(255,255,255,.94)"
-        st.markdown(f'<div style="background:{cnn_bg};border:2px solid {cnn_border};border-radius:22px;padding:25px;min-height:245px;box-shadow:0 10px 28px #2947c710"><div style="font-size:35px;margin-bottom:12px">🧠</div><div style="font-size:20px;font-weight:800;color:#172554">Klasifikasi CNN</div><div style="font-size:13px;color:#667085;line-height:1.8;margin-top:9px">Cocok untuk menentukan apakah gambar paling mungkin berisi anjing atau kucing. Hasil menampilkan prediksi utama beserta skor untuk setiap kelas.</div><div style="margin-top:14px;color:#4263EB;font-size:11px;font-weight:800">MODEL CNN · BEST_MODEL.H5</div></div>', unsafe_allow_html=True)
-        if st.button("✓ Gunakan Klasifikasi CNN" if selected_mode == "Klasifikasi CNN" else "Pilih Klasifikasi CNN", type="primary" if selected_mode == "Klasifikasi CNN" else "secondary", use_container_width=True, key="choose_cnn"):
+        cnn_label = ("🧠  KLASIFIKASI CNN\n\n"
+                     "Menentukan apakah gambar paling mungkin berisi anjing atau kucing.\n\n"
+                     "Hasil: prediksi utama dan skor setiap kelas.\n\n"
+                     "MODEL CNN · BEST_MODEL.H5\n\n"
+                     + ("✓ SEDANG DIPILIH" if selected_mode == "Klasifikasi CNN" else "Klik untuk memilih metode ini"))
+        if st.button(cnn_label, type="primary" if selected_mode == "Klasifikasi CNN" else "secondary", use_container_width=True, key="choose_cnn_card"):
             st.session_state.analysis_mode = "Klasifikasi CNN"
             st.rerun()
     with yolo_col:
-        yolo_border = "#4263EB" if selected_mode == "Deteksi Objek YOLO" else "#E3E9F5"
-        yolo_bg = "linear-gradient(145deg,#F0F5FF,#FFFFFF)" if selected_mode == "Deteksi Objek YOLO" else "rgba(255,255,255,.94)"
-        st.markdown(f'<div style="background:{yolo_bg};border:2px solid {yolo_border};border-radius:22px;padding:25px;min-height:245px;box-shadow:0 10px 28px #2947c710"><div style="font-size:35px;margin-bottom:12px">🎯</div><div style="font-size:20px;font-weight:800;color:#172554">Deteksi Objek YOLO</div><div style="font-size:13px;color:#667085;line-height:1.8;margin-top:9px">Cocok untuk menemukan dan menandai posisi anjing atau kucing pada gambar dengan kotak deteksi. Dapat menghitung beberapa objek yang terdeteksi sekaligus.</div><div style="margin-top:14px;color:#4263EB;font-size:11px;font-weight:800">MODEL YOLO · FILE .PT</div></div>', unsafe_allow_html=True)
-        if st.button("✓ Gunakan Deteksi YOLO" if selected_mode == "Deteksi Objek YOLO" else "Pilih Deteksi Objek YOLO", type="primary" if selected_mode == "Deteksi Objek YOLO" else "secondary", use_container_width=True, key="choose_yolo"):
+        yolo_label = ("🎯  DETEKSI OBJEK YOLO\n\n"
+                      "Menemukan dan menandai posisi anjing atau kucing dengan kotak deteksi.\n\n"
+                      "Hasil: lokasi objek, jumlah deteksi, dan confidence.\n\n"
+                      "MODEL YOLO · FILE .PT\n\n"
+                      + ("✓ SEDANG DIPILIH" if selected_mode == "Deteksi Objek YOLO" else "Klik untuk memilih metode ini"))
+        if st.button(yolo_label, type="primary" if selected_mode == "Deteksi Objek YOLO" else "secondary", use_container_width=True, key="choose_yolo_card"):
             st.session_state.analysis_mode = "Deteksi Objek YOLO"
             st.rerun()
     st.write("")
-    st.markdown(f'<div class="soft-note">Metode terpilih: <b>{escape(st.session_state.analysis_mode)}</b>. Kamu bisa mengganti pilihan di atas sebelum melanjutkan.</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="soft-note">Metode terpilih: <b>{escape(st.session_state.analysis_mode)}</b>. Klik kartu lainnya kapan saja untuk mengganti pilihan.</div>', unsafe_allow_html=True)
     st.write("")
-    a, b = st.columns(2)
-    with a:
-        if st.button("← Kembali ke Registrasi", use_container_width=True):
-            go(2)
-    with b:
-        if st.button("Lanjut ke Unggah Gambar →", type="primary", use_container_width=True):
-            go(4)
+    if st.button("← Kembali ke Registrasi", use_container_width=True, key="method_back"):
+        go(2)
+    if st.button("Lanjut ke Unggah Gambar →", type="primary", use_container_width=True, key="method_continue"):
+        go(4)
 
 elif step == 4:
     mode = st.session_state.analysis_mode
@@ -327,7 +351,7 @@ elif step == 4:
                             predictions = classifier_predict(image, model)
                         loading_slot.empty()
                         st.session_state.analysis_result = {"mode": mode, "predictions": predictions, "image": image.copy()}
-                        go(4)
+                        go(5)
                 else:
                     if not YOLO_PATH.exists():
                         st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan file Haikal_Laporan 4.pt di folder model/.")
@@ -340,7 +364,7 @@ elif step == 4:
                             annotated, counts, best = yolo_predict(image, model, yolo_conf)
                         loading_slot.empty()
                         st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "image": image.copy()}
-                        go(4)
+                        go(5)
             except ImportError as exc:
                 st.error("Dependensi model belum terpasang. CNN memerlukan TensorFlow; YOLO memerlukan ultralytics.")
                 with st.expander("Detail teknis"):
