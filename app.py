@@ -23,7 +23,7 @@ DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
 CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
 DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
-EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.jpg"
+EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.png"
 LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
 HOME_ICON_PATH = ASSET_DIR / "beranda.png"
 ANALYSIS_ICON_PATH = ASSET_DIR / "analisis.png"
@@ -67,7 +67,7 @@ html,body,.stApp,p,h1,h2,h3,h4,button,input,textarea,label{{font-family:'Manrope
 #MainMenu,footer{{visibility:hidden;}} header[data-testid="stHeader"]{{background:transparent;}}
 .block-container{{max-width:1220px;padding:1.5rem 2rem 2rem;}}
 .brand{{display:flex;align-items:center;gap:12px;margin:0 0 18px;}}
-.brand-icon{{width:54px;height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4263EB,#8B5CF6);border-radius:16px;padding:7px;box-shadow:0 8px 18px #4263eb35;overflow:hidden;}} .brand-icon img{{width:100%;height:100%;object-fit:contain;border-radius:10px;}}
+.brand-icon{{width:54px;height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:center;background:transparent;border-radius:0;padding:0;box-shadow:none;overflow:visible;}} .brand-icon img{{width:100%;height:100%;object-fit:contain;border-radius:0;}}
 .brand-name{{font-size:22px;font-weight:800;color:#172554;line-height:1.2;}}
 .brand-sub{{font-size:11px;color:#7B86A1;letter-spacing:.5px;}}
 .progress-wrap{{display:flex;gap:8px;margin:12px 0 24px;}}
