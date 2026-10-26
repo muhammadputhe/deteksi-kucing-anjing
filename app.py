@@ -97,7 +97,7 @@ html,body,.stApp,p,h1,h2,h3,h4,button,input,textarea,label{{font-family:'Manrope
 .conf-track{{flex:1;height:8px;border-radius:99px;background:#E7EBF4;overflow:hidden;}}
 .conf-fill{{height:100%;background:linear-gradient(90deg,#4263EB,#8B5CF6);border-radius:99px;}}
 .conf-pct{{width:55px;text-align:right;color:#344054;font-size:12px;font-weight:800;}}
-.empty-state{{text-align:center;padding:26px 15px;border:1px dashed #CFD8EB;border-radius:16px;background:#ffffffc9;color:#667085;line-height:1.8;}}
+.empty-state{{text-align:center;padding:14px 14px 18px;border:1px dashed #CFD8EB;border-radius:20px;background:rgba(255,255,255,.58);color:#667085;line-height:1.8;overflow:hidden;}} .empty-state img{{display:block;width:100%;max-width:680px;height:auto;max-height:390px;object-fit:contain;margin:0 auto;border-radius:14px;}} .prediction-showcase{{text-align:center;padding:10px 12px 22px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.68),rgba(239,246,255,.78));border:1px solid #E2EAFE;}} .prediction-showcase img{{width:100%;max-width:250px;height:auto;object-fit:contain;display:block;margin:0 auto 10px;}} .prediction-chip{{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:999px;background:linear-gradient(110deg,#DDF4FF,#E8F0FF);border:1px solid #D3E8FF;color:#1745A4;font-size:18px;font-weight:800;}} .prediction-confidence{{font-size:13px;color:#536A9C;font-weight:700;margin-top:10px;}} .prediction-confidence strong{{color:#2149B9;font-size:20px;}}
 .footer{{text-align:center;color:#8A65B5;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
 .stButton button,.stDownloadButton button{{border-radius:12px;font-weight:800;min-height:44px;border:0;}}
 .stButton button[kind="primary"]{{background:linear-gradient(100deg,#4263EB,#8B5CF6);color:white;}}
@@ -177,9 +177,11 @@ def show_member_card(compact=False):
 
 def show_empty_illustration():
     if EMPTY_STATE_PATH.exists():
+        st.markdown('<div class="empty-state">', unsafe_allow_html=True)
         st.image(str(EMPTY_STATE_PATH), use_container_width=True, caption=None)
+        st.markdown('</div>', unsafe_allow_html=True)
     else:
-        st.markdown('<div class="empty-state"><div style="font-size:36px">📸</div><b>Gambar belum dipilih</b><br>Unggah foto untuk memulai analisis.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="empty-state"><div style="font-size:36px">📸</div><b>Belum ada gambar?</b><br>Unggah foto kucing atau anjing untuk memulai analisis.</div>', unsafe_allow_html=True)
 
 def show_loading_visual(message):
     if LOADING_GIF_PATH.exists():
@@ -271,62 +273,68 @@ elif step == 3:
         st.caption("CNN · Model H5 · 224 × 224 RGB · kelas: Anjing dan Kucing")
     else:
         st.caption("YOLO · Model .pt · kotak deteksi dan confidence")
-    left, right = st.columns([1, 1], gap="large")
-    with left:
-        uploaded = st.file_uploader("Pilih gambar (JPG, JPEG, PNG)", type=["jpg", "jpeg", "png"], key="pawscan_upload")
-        image = None
-        if uploaded is not None:
-            try:
-                image = image_to_rgb(uploaded)
-                st.image(image, caption="Pratinjau gambar", use_container_width=True)
-            except Exception:
-                st.error("Gambar tidak dapat dibaca. Silakan pilih file gambar lain.")
-        else:
-            show_empty_illustration()
-    with right:
-        st.markdown('<div class="panel"><div class="panel-title">Sebelum memulai</div><div class="panel-subtitle">• Gunakan foto dengan objek yang terlihat jelas.<br>• Pastikan pencahayaan cukup.<br>• Untuk CNN, satu gambar akan mendapat satu prediksi utama.<br>• Untuk YOLO, hasil bergantung pada bobot model .pt yang tersedia.</div></div>', unsafe_allow_html=True)
-        if mode == "Deteksi Objek YOLO":
-            yolo_conf = st.slider("Ambang keyakinan YOLO", 0.05, 0.95, 0.25, 0.05)
-        else:
-            yolo_conf = 0.25
-        st.write("")
-        if st.button("✨ Analisis Sekarang", type="primary", use_container_width=True, disabled=(image is None)):
-            try:
-                if mode == "Klasifikasi CNN":
-                    if not CLASSIFIER_PATH.exists():
-                        st.error(f"Model CNN tidak ditemukan: {CLASSIFIER_PATH.name}. Letakkan file best_model.h5 di folder yang sama dengan app.py.")
-                    else:
-                        loading_slot = st.empty()
-                        with loading_slot.container():
-                            show_loading_visual("AI sedang membaca gambar kamu. Mohon tunggu...")
-                        with st.spinner("CNN sedang menganalisis gambar..."):
-                            model = load_classifier(str(CLASSIFIER_PATH))
-                            predictions = classifier_predict(image, model)
-                        loading_slot.empty()
-                        st.session_state.analysis_result = {"mode": mode, "predictions": predictions, "image": image.copy()}
-                        go(4)
-                else:
-                    if not YOLO_PATH.exists():
-                        st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan file Haikal_Laporan 4.pt di folder model/.")
-                    else:
-                        loading_slot = st.empty()
-                        with loading_slot.container():
-                            show_loading_visual("PawScan sedang memindai objek dengan YOLO. Mohon tunggu...")
-                        with st.spinner("YOLO sedang mendeteksi objek..."):
-                            model = load_yolo(str(YOLO_PATH))
-                            annotated, counts, best = yolo_predict(image, model, yolo_conf)
-                        loading_slot.empty()
-                        st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "image": image.copy()}
-                        go(4)
-            except ImportError as exc:
-                st.error("Dependensi model belum terpasang. CNN memerlukan TensorFlow; YOLO memerlukan ultralytics.")
-                with st.expander("Detail teknis"):
-                    st.code(str(exc))
-            except Exception as exc:
-                st.error("Analisis gagal dijalankan. Periksa file model dan dependensi.")
-                with st.expander("Detail kesalahan"):
-                    st.code(str(exc))
+
+    uploaded = st.file_uploader("Pilih gambar (JPG, JPEG, PNG)", type=["jpg", "jpeg", "png"], key="pawscan_upload")
+    image = None
+    if uploaded is not None:
+        try:
+            image = image_to_rgb(uploaded)
+        except Exception:
+            st.error("Gambar tidak dapat dibaca. Silakan pilih file gambar lain.")
+
+    if image is None:
+        show_empty_illustration()
+    else:
+        left, right = st.columns([1.05, 1], gap="large")
+        with left:
+            st.image(image, caption="Pratinjau gambar yang akan dianalisis", use_container_width=True)
+        with right:
+            st.markdown('<div class="panel"><div class="panel-title">Sebelum memulai</div><div class="panel-subtitle">• Gunakan foto dengan objek yang terlihat jelas.<br>• Pastikan pencahayaan cukup.<br>• Untuk CNN, satu gambar akan mendapat satu prediksi utama.<br>• Untuk YOLO, hasil bergantung pada bobot model .pt yang tersedia.</div></div>', unsafe_allow_html=True)
+            if mode == "Deteksi Objek YOLO":
+                yolo_conf = st.slider("Ambang keyakinan YOLO", 0.05, 0.95, 0.25, 0.05)
+            else:
+                yolo_conf = 0.25
+    if image is None:
+        yolo_conf = st.slider("Ambang keyakinan YOLO", 0.05, 0.95, 0.25, 0.05) if mode == "Deteksi Objek YOLO" else 0.25
+        st.markdown('<div class="soft-note">Tips: pilih foto dengan pencahayaan cukup dan wajah atau tubuh hewan terlihat jelas agar hasil analisis lebih optimal.</div>', unsafe_allow_html=True)
+
     st.write("")
+    if st.button("✨ Analisis Sekarang", type="primary", use_container_width=True, disabled=(image is None)):
+        try:
+            if mode == "Klasifikasi CNN":
+                if not CLASSIFIER_PATH.exists():
+                    st.error(f"Model CNN tidak ditemukan: {CLASSIFIER_PATH.name}. Letakkan file best_model.h5 di folder yang sama dengan app.py.")
+                else:
+                    loading_slot = st.empty()
+                    with loading_slot.container():
+                        show_loading_visual("AI sedang membaca gambar kamu. Mohon tunggu...")
+                    with st.spinner("CNN sedang menganalisis gambar..."):
+                        model = load_classifier(str(CLASSIFIER_PATH))
+                        predictions = classifier_predict(image, model)
+                    loading_slot.empty()
+                    st.session_state.analysis_result = {"mode": mode, "predictions": predictions, "image": image.copy()}
+                    go(4)
+            else:
+                if not YOLO_PATH.exists():
+                    st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan file Haikal_Laporan 4.pt di folder model/.")
+                else:
+                    loading_slot = st.empty()
+                    with loading_slot.container():
+                        show_loading_visual("PawScan sedang memindai objek dengan YOLO. Mohon tunggu...")
+                    with st.spinner("YOLO sedang mendeteksi objek..."):
+                        model = load_yolo(str(YOLO_PATH))
+                        annotated, counts, best = yolo_predict(image, model, yolo_conf)
+                    loading_slot.empty()
+                    st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "image": image.copy()}
+                    go(4)
+        except ImportError as exc:
+            st.error("Dependensi model belum terpasang. CNN memerlukan TensorFlow; YOLO memerlukan ultralytics.")
+            with st.expander("Detail teknis"):
+                st.code(str(exc))
+        except Exception as exc:
+            st.error("Analisis gagal dijalankan. Periksa file model dan dependensi.")
+            with st.expander("Detail kesalahan"):
+                st.code(str(exc))
     if st.button("← Kembali ke Registrasi"):
         go(2)
 
@@ -359,12 +367,14 @@ elif step == 4:
                 predictions = result["predictions"]
                 top_label, top_score = predictions[0]
                 icon_path = CAT_ICON_PATH if top_label == "Kucing" else DOG_ICON_PATH
+                st.markdown('<div class="prediction-showcase">', unsafe_allow_html=True)
                 if icon_path.exists():
-                    st.image(str(icon_path), width=140)
+                    st.image(str(icon_path), use_container_width=True)
                 else:
-                    st.markdown("<div style='font-size:44px'>" + ("🐱" if top_label == "Kucing" else "🐶") + "</div>", unsafe_allow_html=True)
-                st.markdown(f'<div class="result-banner"><div class="result-label">PREDIKSI UTAMA</div><div class="result-answer">{top_label}</div><div style="color:#5265A8;font-size:12px;margin-top:5px">Skor model: {top_score:.1%}</div></div>', unsafe_allow_html=True)
-                st.markdown('<div class="panel-title">Perbandingan skor kelas</div>', unsafe_allow_html=True)
+                    st.markdown("<div style='font-size:76px;padding:22px 0'>" + ("🐱" if top_label == "Kucing" else "🐶") + "</div>", unsafe_allow_html=True)
+                pet_emoji = "🐱" if top_label == "Kucing" else "🐶"
+                st.markdown(f'<div class="prediction-chip">{pet_emoji} {top_label}</div><div class="prediction-confidence">Tingkat keyakinan model<br><strong>{top_score:.1%}</strong></div></div>', unsafe_allow_html=True)
+                st.markdown('<div class="panel-title" style="margin-top:20px">Perbandingan skor kelas</div>', unsafe_allow_html=True)
                 st.markdown(confidence_rows(predictions), unsafe_allow_html=True)
                 summary = f"Model CNN memprediksi gambar sebagai {top_label} dengan skor model {top_score:.1%}. "
                 summary += "Skor tertinggi menunjukkan kelas yang paling didukung model, bukan jaminan bahwa prediksi selalu benar."
