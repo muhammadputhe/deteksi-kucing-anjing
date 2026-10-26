@@ -23,7 +23,7 @@ DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
 CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
 DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
-EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.jpg"
+EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.png"
 LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
 HOME_ICON_PATH = ASSET_DIR / "beranda.png"
 ANALYSIS_ICON_PATH = ASSET_DIR / "analisis.png"
@@ -243,47 +243,14 @@ if step == 1:
         go(2)
 
 elif step == 2:
-    mascot_uri = bg_uri(ASSET_DIR / "mascot.jpg")
-    img_html = (f'<img src="{mascot_uri}" style="width:100%;max-width:320px;margin:10px auto -20px;display:block;filter:drop-shadow(0 10px 15px rgba(0,0,0,.25));" alt="Mascot PawScan">' if mascot_uri else "")
-
-    st.markdown("""
-    <style>
-    .panel-baru-kiri {
-        background: linear-gradient(135deg, #1e3a8a, #4f46e5);
-        border-radius: 24px;
-        padding: 34px 34px 0 34px;
-        color: white;
-        min-height: 440px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        box-shadow: 0 16px 40px #2947c729;
-        overflow: hidden;
-    }
-    .panel-baru-kiri h1 { color: white; }
-    @media(max-width: 600px) {
-        .panel-baru-kiri { padding: 25px 25px 0 25px; min-height: 380px; }
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-    left, right = st.columns([1.1, 1], gap="large")
+    left, right = st.columns([1, 1.15], gap="large")
     with left:
-        st.markdown(f'''
-        <div class="panel-baru-kiri">
-            <div><span class="hero-kicker" style="margin-bottom:15px;">PAWSCAN MEMBER</span></div>
-            <h1 style="font-size:clamp(28px,4vw,36px);line-height:1.2;margin:10px 0;">Halo, Selamat<br>Bergabung di<br>PawScan!</h1>
-            <p style="color:#E0E8FF;font-size:14px;line-height:1.6;margin-bottom:15px;">Hanya satu langkah lagi untuk memulai petualangan analisis jejak kaki kesayanganmu!</p>
-            {img_html}
-        </div>
-        ''', unsafe_allow_html=True)
-
+        st.markdown('<div class="hero"><div class="hero-decoration">🐱</div><span class="hero-kicker">PAWSCAN MEMBER</span><h1>Halo,<br>Teman Baru!</h1><p>Lengkapi identitas singkat sebelum memulai analisis gambar.</p></div>', unsafe_allow_html=True)
     with right:
         st.markdown('<div class="panel"><div class="panel-title">📝 Registrasi Singkat</div><div class="panel-subtitle">Isi data berikut untuk melanjutkan ke sesi analisis.</div>', unsafe_allow_html=True)
-        full_name = st.text_input("👤 Nama lengkap", value=st.session_state.full_name, placeholder="Contoh: DAFA")
-        campus = st.text_input("🏫 Nama kampus", value=st.session_state.campus, placeholder="Contoh: USK")
+        full_name = st.text_input("Nama lengkap", value=st.session_state.full_name, placeholder="Masukkan nama lengkap")
+        campus = st.text_input("Nama kampus", value=st.session_state.campus, placeholder="Masukkan nama kampus")
         st.markdown('</div>', unsafe_allow_html=True)
-
         st.write("")
         a, b = st.columns(2)
         with a:
