@@ -206,35 +206,33 @@ if "analysis_result" not in st.session_state:
 if "analysis_mode" not in st.session_state:
     st.session_state.analysis_mode = "Klasifikasi CNN"
 
-# Brand + four-stage progress navigation.
+# Brand + five-stage progress navigation.
 main_icon_uri = bg_uri(MAIN_ICON_PATH)
 brand_mark = f'<img src="{main_icon_uri}" alt="PawScan icon">' if main_icon_uri else '🐾'
 st.markdown(f'<div class="brand"><div class="brand-icon">{brand_mark}</div><div><div class="brand-name">PawScan</div><div class="brand-sub">ANIMAL RECOGNITION · CNN + YOLO</div></div></div>', unsafe_allow_html=True)
 step = st.session_state.step
-labels = ["Intro", "Registrasi", "Analisis", "Hasil"]
-progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 5))
+labels = ["Intro", "Registrasi", "Metode", "Unggah & Analisis", "Hasil"]
+progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 6))
 st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 4 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
 if step == 1:
     st.markdown("""
-    <div class="hero"><div class="hero-decoration">🐾</div>
+    <div class="hero">
     <span class="hero-kicker">SMART PET RECOGNITION</span>
     <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
-    <p>Selamat datang di PawScan! Unggah foto hewan untuk menganalisis gambar menggunakan CNN atau mendeteksi objek dengan YOLO. Ikuti empat langkah sederhana untuk melihat hasilnya.</p>
+    <p>Selamat datang di PawScan! Pilih metode klasifikasi CNN untuk mengenali jenis hewan, atau deteksi objek menggunakan YOLO untuk menemukan dan menandai hewan dalam gambar. Ikuti lima sesi sederhana untuk melihat hasilnya.</p>
     </div>""", unsafe_allow_html=True)
     st.write("")
     c1, c2, c3 = st.columns(3, gap="medium")
-    for col, num, title, desc, icon_path in [
-        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus.", MAIN_ICON_PATH),
-        (c2, "02", "Unggah gambar", "Pilih foto anjing atau kucing.", ANALYSIS_ICON_PATH),
-        (c3, "03", "Lihat hasil", "Baca prediksi dan ringkasan AI.", DOWNLOAD_ICON_PATH),
+    for col, num, title, desc in [
+        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus."),
+        (c2, "02", "Pilih metode", "Tentukan CNN atau deteksi YOLO."),
+        (c3, "03", "Unggah & lihat hasil", "Unggah foto dan baca ringkasan AI."),
     ]:
         with col:
-            if icon_path.exists():
-                st.image(str(icon_path), width=42)
             st.markdown(f'<div class="panel"><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
     st.write("")
-    if st.button("🐶 Mulai Sekarang", type="primary", use_container_width=True):
+    if st.button("Mulai Sekarang →", type="primary", use_container_width=True):
         go(2)
 
 elif step == 2:
@@ -261,16 +259,41 @@ elif step == 2:
                     go(3)
 
 elif step == 3:
-    st.markdown('<div class="panel"><div class="panel-title">📷 Unggah & Analisis Gambar</div><div class="panel-subtitle">Pilih metode, lalu unggah gambar anjing atau kucing yang jelas. CNN memprediksi satu kelas utama; YOLO dapat mendeteksi beberapa objek.</div></div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero"><span class="hero-kicker">SESI 3 · PILIH METODE</span><h1>Bagaimana kamu ingin<br><span style="color:#AFC2FF">mengenali hewan?</span></h1><p>Pilih salah satu metode di bawah. Pilihan ini akan digunakan secara otomatis pada sesi unggah dan analisis, jadi kamu tidak perlu memilih metode lagi nanti.</p></div>', unsafe_allow_html=True)
+    st.write("")
+    selected_mode = st.session_state.analysis_mode
+    cnn_col, yolo_col = st.columns(2, gap="large")
+    with cnn_col:
+        cnn_border = "#4263EB" if selected_mode == "Klasifikasi CNN" else "#E3E9F5"
+        cnn_bg = "linear-gradient(145deg,#F0F5FF,#FFFFFF)" if selected_mode == "Klasifikasi CNN" else "rgba(255,255,255,.94)"
+        st.markdown(f'<div style="background:{cnn_bg};border:2px solid {cnn_border};border-radius:22px;padding:25px;min-height:245px;box-shadow:0 10px 28px #2947c710"><div style="font-size:35px;margin-bottom:12px">🧠</div><div style="font-size:20px;font-weight:800;color:#172554">Klasifikasi CNN</div><div style="font-size:13px;color:#667085;line-height:1.8;margin-top:9px">Cocok untuk menentukan apakah gambar paling mungkin berisi anjing atau kucing. Hasil menampilkan prediksi utama beserta skor untuk setiap kelas.</div><div style="margin-top:14px;color:#4263EB;font-size:11px;font-weight:800">MODEL CNN · BEST_MODEL.H5</div></div>', unsafe_allow_html=True)
+        if st.button("✓ Gunakan Klasifikasi CNN" if selected_mode == "Klasifikasi CNN" else "Pilih Klasifikasi CNN", type="primary" if selected_mode == "Klasifikasi CNN" else "secondary", use_container_width=True, key="choose_cnn"):
+            st.session_state.analysis_mode = "Klasifikasi CNN"
+            st.rerun()
+    with yolo_col:
+        yolo_border = "#4263EB" if selected_mode == "Deteksi Objek YOLO" else "#E3E9F5"
+        yolo_bg = "linear-gradient(145deg,#F0F5FF,#FFFFFF)" if selected_mode == "Deteksi Objek YOLO" else "rgba(255,255,255,.94)"
+        st.markdown(f'<div style="background:{yolo_bg};border:2px solid {yolo_border};border-radius:22px;padding:25px;min-height:245px;box-shadow:0 10px 28px #2947c710"><div style="font-size:35px;margin-bottom:12px">🎯</div><div style="font-size:20px;font-weight:800;color:#172554">Deteksi Objek YOLO</div><div style="font-size:13px;color:#667085;line-height:1.8;margin-top:9px">Cocok untuk menemukan dan menandai posisi anjing atau kucing pada gambar dengan kotak deteksi. Dapat menghitung beberapa objek yang terdeteksi sekaligus.</div><div style="margin-top:14px;color:#4263EB;font-size:11px;font-weight:800">MODEL YOLO · FILE .PT</div></div>', unsafe_allow_html=True)
+        if st.button("✓ Gunakan Deteksi YOLO" if selected_mode == "Deteksi Objek YOLO" else "Pilih Deteksi Objek YOLO", type="primary" if selected_mode == "Deteksi Objek YOLO" else "secondary", use_container_width=True, key="choose_yolo"):
+            st.session_state.analysis_mode = "Deteksi Objek YOLO"
+            st.rerun()
+    st.write("")
+    st.markdown(f'<div class="soft-note">Metode terpilih: <b>{escape(st.session_state.analysis_mode)}</b>. Kamu bisa mengganti pilihan di atas sebelum melanjutkan.</div>', unsafe_allow_html=True)
+    st.write("")
+    a, b = st.columns(2)
+    with a:
+        if st.button("← Kembali ke Registrasi", use_container_width=True):
+            go(2)
+    with b:
+        if st.button("Lanjut ke Unggah Gambar →", type="primary", use_container_width=True):
+            go(4)
+
+elif step == 4:
+    mode = st.session_state.analysis_mode
+    st.markdown(f'<div class="panel"><div class="panel-title">📷 Unggah & Analisis Gambar</div><div class="panel-subtitle">Metode yang digunakan: <b>{escape(mode)}</b>. Unggah gambar anjing atau kucing yang jelas untuk memulai analisis.</div></div>', unsafe_allow_html=True)
     show_member_card(compact=True)
     st.write("")
-    mode = st.radio("Pilih metode analisis", ["Klasifikasi CNN", "Deteksi Objek YOLO"], horizontal=True,
-                    index=0 if st.session_state.analysis_mode == "Klasifikasi CNN" else 1)
-    st.session_state.analysis_mode = mode
-    if mode == "Klasifikasi CNN":
-        st.caption("CNN · Model H5 · 224 × 224 RGB · kelas: Anjing dan Kucing")
-    else:
-        st.caption("YOLO · Model .pt · kotak deteksi dan confidence")
+    st.caption("CNN · Model H5 · 224 × 224 RGB · kelas: Anjing dan Kucing" if mode == "Klasifikasi CNN" else "YOLO · Model .pt · kotak deteksi, jumlah objek, dan confidence")
     left, right = st.columns([1, 1], gap="large")
     with left:
         uploaded = st.file_uploader("Pilih gambar (JPG, JPEG, PNG)", type=["jpg", "jpeg", "png"], key="pawscan_upload")
@@ -327,15 +350,15 @@ elif step == 3:
                 with st.expander("Detail kesalahan"):
                     st.code(str(exc))
     st.write("")
-    if st.button("← Kembali ke Registrasi"):
-        go(2)
+    if st.button("← Kembali ke Pilihan Metode"):
+        go(3)
 
-elif step == 4:
+elif step == 5:
     result = st.session_state.analysis_result
     if not result:
         st.markdown('<div class="empty-state"><div style="font-size:36px">🔎</div><b>Belum ada hasil analisis</b><br>Kembali ke sesi analisis untuk mengunggah gambar.</div>', unsafe_allow_html=True)
         if st.button("Ke sesi analisis", type="primary"):
-            go(3)
+            go(4)
     else:
         safe_name = escape(st.session_state.full_name or "Teman PawScan")
         st.markdown(f'<div class="hero"><div class="hero-decoration">✨</div><span class="hero-kicker">ANALISIS SELESAI</span><h1>Hasil PawScan</h1><p>Terima kasih, {safe_name}! Berikut ringkasan hasil analisis gambar Anda.</p></div>', unsafe_allow_html=True)
@@ -389,7 +412,7 @@ elif step == 4:
         with c1:
             if st.button("🔄 Analisis Gambar Lain", type="primary", use_container_width=True):
                 st.session_state.analysis_result = None
-                go(3)
+                go(4)
         with c2:
             if st.button("⌂ Kembali ke Beranda", use_container_width=True):
                 st.session_state.analysis_result = None
