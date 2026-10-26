@@ -60,8 +60,10 @@ if mobile_bg:
 
 st.markdown(f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
-html,body,.stApp,p,h1,h2,h3,h4,button,input,textarea,label{{font-family:'Manrope',sans-serif;}}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap');
+html,body,.stApp,p,button,input,textarea,label,[data-testid="stMarkdownContainer"]{{font-family:'Inter',sans-serif;}}
+h1,h2,h3,h4,.brand-name,.hero h1,.panel-title,.member-name,.metric-value,.result-answer{{font-family:'Poppins',sans-serif!important;}}
+h1,h2,h3,h4{{font-weight:700;}}
 .stApp{{{bg_css}color:#172033;}}
 [data-testid="stAppViewContainer"],[data-testid="stMain"],[data-testid="stMainBlockContainer"]{{background:transparent!important;}}
 #MainMenu,footer{{visibility:hidden;}} header[data-testid="stHeader"]{{background:transparent;}}
