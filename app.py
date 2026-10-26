@@ -32,6 +32,11 @@ DELETE_ICON_PATH = ASSET_DIR / "hapus.png"
 SETTINGS_ICON_PATH = ASSET_DIR / "pengaturan.png"
 HISTORY_ICON_PATH = ASSET_DIR / "riwayat.png"
 DOWNLOAD_ICON_PATH = ASSET_DIR / "unduh_hasil.png"
+# Custom interactive method-card assets (normal and selected states).
+CNN_CARD_PATH = ASSET_DIR / "card_cnn.png"
+CNN_CARD_SELECTED_PATH = ASSET_DIR / "card_cnn_selected.png"
+YOLO_CARD_PATH = ASSET_DIR / "card_yolo.png"
+YOLO_CARD_SELECTED_PATH = ASSET_DIR / "card_yolo_selected.png"
 IMAGE_SIZE = (224, 224)
 
 # PawScan visual identity: navy, blue, white, and soft lavender.
@@ -260,120 +265,111 @@ elif step == 2:
 
 elif step == 3:
     st.markdown("""
-    <style>
-    /* Kartu metode berukuran besar dan bisa dipilih dengan klik di mana saja. */
-    div[class*="st-key-choose_cnn_card"] button,
-    div[class*="st-key-choose_yolo_card"] button {
-        width: 100% !important;
-        min-height: 310px !important;
-        height: 100% !important;
-        padding: 28px 26px !important;
-        border-radius: 24px !important;
-        border: 2px solid #DCE4F5 !important;
-        background: rgba(255,255,255,.97) !important;
-        color: #172554 !important;
-        text-align: left !important;
-        white-space: normal !important;
-        box-shadow: 0 10px 28px #18274b12 !important;
-        display: flex !important;
-        align-items: flex-start !important;
-        justify-content: flex-start !important;
-        white-space: normal !important;
-        overflow: visible !important;
-        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-    }
-    div[class*="st-key-choose_cnn_card"] button div,
-    div[class*="st-key-choose_yolo_card"] button div,
-    div[class*="st-key-choose_cnn_card"] button p,
-    div[class*="st-key-choose_yolo_card"] button p {
-        white-space: pre-wrap !important;
-        overflow-wrap: anywhere !important;
-        text-overflow: clip !important;
-        max-width: 100% !important;
-    }
-    div[class*="st-key-choose_cnn_card"] button:hover,
-    div[class*="st-key-choose_yolo_card"] button:hover {
-        border-color: #4263EB !important;
-        box-shadow: 0 14px 32px #4263eb20 !important;
-        transform: translateY(-2px);
-    }
-    div[class*="st-key-choose_cnn_card"] button p,
-    div[class*="st-key-choose_yolo_card"] button p {
-        white-space: pre-wrap !important;
-        text-align: left !important;
-        line-height: 1.9 !important;
-        font-size: 15px !important;
-    }
-    @media(max-width: 700px) {
-        div[class*="st-key-choose_cnn_card"] button,
-        div[class*="st-key-choose_yolo_card"] button {
-            min-height: 250px !important;
-            padding: 20px !important;
-        }
-    }
-    </style>
-    <div class="hero"><span class="hero-kicker">SESI 3 · PILIH METODE</span><h1>Bagaimana kamu ingin<br><span style="color:#AFC2FF">mengenali hewan?</span></h1><p>Pilih salah satu kartu di bawah. Seluruh kartu bisa diklik, dan metode pilihanmu akan digunakan otomatis pada sesi unggah gambar.</p></div>
+    <div class="hero">
+      <span class="hero-kicker">SESI 3 · PILIH METODE</span>
+      <h1>Bagaimana kamu ingin<br><span style="color:#AFC2FF">mengenali hewan?</span></h1>
+      <p>Pilih kartu yang sesuai dengan kebutuhanmu. CNN berfokus mengenali jenis hewan, sedangkan YOLO menemukan lokasi dan jumlah objek. Metode pilihan akan digunakan otomatis pada sesi unggah gambar.</p>
+    </div>
     """, unsafe_allow_html=True)
     st.write("")
+
     selected_mode = st.session_state.analysis_mode
-    # Warna kartu aktif mengikuti metode yang dipilih, dan berubah setelah klik.
-    if selected_mode == "Klasifikasi CNN":
-        selected_card_css = """
-        div.st-key-choose_cnn_card button,
-        div[class*="st-key-choose_cnn_card"] button[kind="primary"],
-        div[class*="st-key-choose_cnn_card"] button[kind="secondary"] {
-            background: linear-gradient(140deg, #3157E8 0%, #6954F5 58%, #8B5CF6 100%) !important;
-            border: 2px solid #2947C7 !important;
-            color: #FFFFFF !important;
-            box-shadow: 0 18px 38px #5365E84D, inset 0 1px 0 #FFFFFF45 !important;
-            transform: translateY(-3px);
-        }
-        div[class*="st-key-choose_cnn_card"] button p,
-        div[class*="st-key-choose_cnn_card"] button strong { color: #FFFFFF !important; }
-        div[class*="st-key-choose_cnn_card"] button:hover { filter: brightness(1.04); }
-        """
-    else:
-        selected_card_css = """
-        div.st-key-choose_yolo_card button,
-        div[class*="st-key-choose_yolo_card"] button[kind="primary"],
-        div[class*="st-key-choose_yolo_card"] button[kind="secondary"] {
-            background: linear-gradient(140deg, #087E8B 0%, #147DCC 52%, #4F65E8 100%) !important;
-            border: 2px solid #087E8B !important;
-            color: #FFFFFF !important;
-            box-shadow: 0 18px 38px #1685B84D, inset 0 1px 0 #FFFFFF45 !important;
-            transform: translateY(-3px);
-        }
-        div[class*="st-key-choose_yolo_card"] button p,
-        div[class*="st-key-choose_yolo_card"] button strong { color: #FFFFFF !important; }
-        div[class*="st-key-choose_yolo_card"] button:hover { filter: brightness(1.04); }
-        """
-    st.markdown(f"<style>{selected_card_css}</style>", unsafe_allow_html=True)
+
+    # Embed the selected PNG directly as each button's background so the whole
+    # card is clickable and the artwork changes with the selected method.
+    cnn_normal_uri = bg_uri(CNN_CARD_PATH)
+    cnn_selected_uri = bg_uri(CNN_CARD_SELECTED_PATH)
+    yolo_normal_uri = bg_uri(YOLO_CARD_PATH)
+    yolo_selected_uri = bg_uri(YOLO_CARD_SELECTED_PATH)
+
+    cnn_card_uri = cnn_selected_uri if selected_mode == "Klasifikasi CNN" else cnn_normal_uri
+    yolo_card_uri = yolo_selected_uri if selected_mode == "Deteksi Objek YOLO" else yolo_normal_uri
+
+    # If the asset folder hasn't been copied yet, keep the screen usable with
+    # a styled native-button fallback and a clear warning.
+    if not all([cnn_normal_uri, cnn_selected_uri, yolo_normal_uri, yolo_selected_uri]):
+        st.warning("Sebagian asset kartu belum ditemukan. Ekstrak pawscan_method_cards_idea4.zip dan letakkan empat file PNG di folder assets/.")
+
+    st.markdown(f"""
+    <style>
+      div[class*="st-key-choose_cnn_card"] button,
+      div[class*="st-key-choose_yolo_card"] button {{
+        width: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        aspect-ratio: 1.69 / 1 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        border-radius: 22px !important;
+        overflow: hidden !important;
+        background-color: transparent !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: 100% 100% !important;
+        box-shadow: 0 10px 28px #18274b12 !important;
+        transition: transform .18s ease, box-shadow .18s ease !important;
+      }}
+      div[class*="st-key-choose_cnn_card"] button {{
+        background-image: url("{cnn_card_uri}") !important;
+      }}
+      div[class*="st-key-choose_yolo_card"] button {{
+        background-image: url("{yolo_card_uri}") !important;
+      }}
+      div[class*="st-key-choose_cnn_card"] button:hover,
+      div[class*="st-key-choose_yolo_card"] button:hover {{
+        transform: translateY(-3px) !important;
+        box-shadow: 0 16px 34px #2947c72b !important;
+        filter: brightness(1.025);
+      }}
+      div[class*="st-key-choose_cnn_card"] button > div,
+      div[class*="st-key-choose_yolo_card"] button > div {{
+        visibility: hidden !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }}
+      @media(max-width: 700px) {{
+        div[class*="st-key-choose_cnn_card"] button,
+        div[class*="st-key-choose_yolo_card"] button {{
+          aspect-ratio: 1.45 / 1 !important;
+          border-radius: 16px !important;
+        }}
+      }}
+    </style>
+    """, unsafe_allow_html=True)
+
     cnn_col, yolo_col = st.columns(2, gap="large")
     with cnn_col:
-        cnn_label = ("🧠 **KLASIFIKASI CNN**  \n\n"
-                     "Menentukan apakah gambar paling mungkin berisi anjing atau kucing.  \n\n"
-                     "**Hasil:** prediksi utama dan skor setiap kelas.  \n\n"
-                     "**MODEL CNN · BEST_MODEL.H5**  \n\n"
-                     + ("✓ **SEDANG DIPILIH**" if selected_mode == "Klasifikasi CNN" else "Pilih kartu ini untuk menggunakan CNN"))
-        if st.button(cnn_label, type="primary" if selected_mode == "Klasifikasi CNN" else "secondary", use_container_width=True, key="choose_cnn_card"):
-            st.session_state.analysis_mode = "Klasifikasi CNN"
-            st.rerun()
+        if st.button("Pilih metode Klasifikasi CNN", key="choose_cnn_card", use_container_width=True):
+            if st.session_state.analysis_mode != "Klasifikasi CNN":
+                st.session_state.analysis_mode = "Klasifikasi CNN"
+                st.rerun()
     with yolo_col:
-        yolo_label = ("🎯 **DETEKSI OBJEK YOLO**  \n\n"
-                      "Menemukan dan menandai posisi anjing atau kucing dengan kotak deteksi.  \n\n"
-                      "**Hasil:** lokasi objek, jumlah deteksi, dan confidence.  \n\n"
-                      "**MODEL YOLO · FILE .PT**  \n\n"
-                      + ("✓ **SEDANG DIPILIH**" if selected_mode == "Deteksi Objek YOLO" else "Pilih kartu ini untuk menggunakan YOLO"))
-        if st.button(yolo_label, type="primary" if selected_mode == "Deteksi Objek YOLO" else "secondary", use_container_width=True, key="choose_yolo_card"):
-            st.session_state.analysis_mode = "Deteksi Objek YOLO"
-            st.rerun()
+        if st.button("Pilih metode Deteksi Objek YOLO", key="choose_yolo_card", use_container_width=True):
+            if st.session_state.analysis_mode != "Deteksi Objek YOLO":
+                st.session_state.analysis_mode = "Deteksi Objek YOLO"
+                st.rerun()
+
     st.write("")
-    st.markdown(f'<div class="soft-note">Metode terpilih: <b>{escape(st.session_state.analysis_mode)}</b>. Klik kartu lainnya kapan saja untuk mengganti pilihan.</div>', unsafe_allow_html=True)
+    selected_description = (
+        "Klasifikasi CNN memprediksi kelas utama kucing atau anjing dan menampilkan skor untuk setiap kelas."
+        if st.session_state.analysis_mode == "Klasifikasi CNN"
+        else "Deteksi Objek YOLO menandai posisi hewan dengan kotak deteksi dan menghitung objek yang dikenali."
+    )
+    st.markdown(
+        f'<div class="soft-note"><b>Metode terpilih: {escape(st.session_state.analysis_mode)}</b><br>{escape(selected_description)}<br><br>Tekan kartu lainnya kapan saja untuk mengganti pilihan.</div>',
+        unsafe_allow_html=True,
+    )
     st.write("")
-    if st.button("← Kembali ke Registrasi", use_container_width=True, key="method_back"):
-        go(2)
-    if st.button("Lanjut ke Unggah Gambar →", type="primary", use_container_width=True, key="method_continue"):
-        go(4)
+    back_col, next_col = st.columns(2, gap="medium")
+    with back_col:
+        if st.button("← Kembali ke Registrasi", use_container_width=True, key="method_back"):
+            go(2)
+    with next_col:
+        if st.button("Lanjut ke Unggah Gambar →", type="primary", use_container_width=True, key="method_continue"):
+            go(4)
 
 elif step == 4:
     mode = st.session_state.analysis_mode
