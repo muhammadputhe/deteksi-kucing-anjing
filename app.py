@@ -261,24 +261,44 @@ elif step == 2:
 elif step == 3:
     st.markdown("""
     <style>
-    /* Pada sesi metode, tombol kartu menjadi area klik utama. */
-    div[data-testid="stHorizontalBlock"] div[data-testid="column"] div[data-testid="stButton"] button {
-        min-height: 225px;
-        height: auto;
-        padding: 24px 22px;
-        border-radius: 22px;
-        border: 2px solid #DCE4F5;
-        background: rgba(255,255,255,.96);
-        color: #172554;
-        text-align: left;
-        white-space: pre-wrap;
-        box-shadow: 0 8px 24px #18274b0a;
-        align-items: flex-start;
-        justify-content: flex-start;
+    /* Kartu metode berukuran besar dan bisa dipilih dengan klik di mana saja. */
+    .st-key-choose_cnn_card button,
+    .st-key-choose_yolo_card button {
+        width: 100% !important;
+        min-height: 310px !important;
+        height: 100% !important;
+        padding: 28px 26px !important;
+        border-radius: 24px !important;
+        border: 2px solid #DCE4F5 !important;
+        background: rgba(255,255,255,.97) !important;
+        color: #172554 !important;
+        text-align: left !important;
+        white-space: normal !important;
+        box-shadow: 0 10px 28px #18274b12 !important;
+        display: flex !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
-    div[data-testid="stHorizontalBlock"] div[data-testid="column"] div[data-testid="stButton"] button p {
-        white-space: pre-wrap;
-        line-height: 1.8;
+    .st-key-choose_cnn_card button:hover,
+    .st-key-choose_yolo_card button:hover {
+        border-color: #4263EB !important;
+        box-shadow: 0 14px 32px #4263eb20 !important;
+        transform: translateY(-2px);
+    }
+    .st-key-choose_cnn_card button p,
+    .st-key-choose_yolo_card button p {
+        white-space: pre-wrap !important;
+        text-align: left !important;
+        line-height: 1.9 !important;
+        font-size: 15px !important;
+    }
+    @media(max-width: 700px) {
+        .st-key-choose_cnn_card button,
+        .st-key-choose_yolo_card button {
+            min-height: 250px !important;
+            padding: 20px !important;
+        }
     }
     </style>
     <div class="hero"><span class="hero-kicker">SESI 3 · PILIH METODE</span><h1>Bagaimana kamu ingin<br><span style="color:#AFC2FF">mengenali hewan?</span></h1><p>Pilih salah satu kartu di bawah. Seluruh kartu bisa diklik, dan metode pilihanmu akan digunakan otomatis pada sesi unggah gambar.</p></div>
@@ -287,20 +307,20 @@ elif step == 3:
     selected_mode = st.session_state.analysis_mode
     cnn_col, yolo_col = st.columns(2, gap="large")
     with cnn_col:
-        cnn_label = ("🧠  KLASIFIKASI CNN\n\n"
-                     "Menentukan apakah gambar paling mungkin berisi anjing atau kucing.\n\n"
-                     "Hasil: prediksi utama dan skor setiap kelas.\n\n"
-                     "MODEL CNN · BEST_MODEL.H5\n\n"
-                     + ("✓ SEDANG DIPILIH" if selected_mode == "Klasifikasi CNN" else "Klik untuk memilih metode ini"))
+        cnn_label = ("🧠 **KLASIFIKASI CNN**  \n\n"
+                     "Menentukan apakah gambar paling mungkin berisi anjing atau kucing.  \n\n"
+                     "**Hasil:** prediksi utama dan skor setiap kelas.  \n\n"
+                     "**MODEL CNN · BEST_MODEL.H5**  \n\n"
+                     + ("✓ **SEDANG DIPILIH**" if selected_mode == "Klasifikasi CNN" else "Pilih kartu ini untuk menggunakan CNN"))
         if st.button(cnn_label, type="primary" if selected_mode == "Klasifikasi CNN" else "secondary", use_container_width=True, key="choose_cnn_card"):
             st.session_state.analysis_mode = "Klasifikasi CNN"
             st.rerun()
     with yolo_col:
-        yolo_label = ("🎯  DETEKSI OBJEK YOLO\n\n"
-                      "Menemukan dan menandai posisi anjing atau kucing dengan kotak deteksi.\n\n"
-                      "Hasil: lokasi objek, jumlah deteksi, dan confidence.\n\n"
-                      "MODEL YOLO · FILE .PT\n\n"
-                      + ("✓ SEDANG DIPILIH" if selected_mode == "Deteksi Objek YOLO" else "Klik untuk memilih metode ini"))
+        yolo_label = ("🎯 **DETEKSI OBJEK YOLO**  \n\n"
+                      "Menemukan dan menandai posisi anjing atau kucing dengan kotak deteksi.  \n\n"
+                      "**Hasil:** lokasi objek, jumlah deteksi, dan confidence.  \n\n"
+                      "**MODEL YOLO · FILE .PT**  \n\n"
+                      + ("✓ **SEDANG DIPILIH**" if selected_mode == "Deteksi Objek YOLO" else "Pilih kartu ini untuk menggunakan YOLO"))
         if st.button(yolo_label, type="primary" if selected_mode == "Deteksi Objek YOLO" else "secondary", use_container_width=True, key="choose_yolo_card"):
             st.session_state.analysis_mode = "Deteksi Objek YOLO"
             st.rerun()
