@@ -23,6 +23,7 @@ DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
 CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
 DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
+MASCOT_PATH = ASSET_DIR / "mascot.png"  # Opsional: maskot kucing + anjing dalam satu PNG transparan
 EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.jpg"
 LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
 HOME_ICON_PATH = ASSET_DIR / "beranda.png"
@@ -80,7 +81,18 @@ h1,h2,h3,h4{{font-weight:700;}}
 .hero h1{{color:white;font-size:clamp(28px,4vw,46px);line-height:1.15;font-weight:800;letter-spacing:-1px;margin:12px 0;}}
 .hero p{{color:#E0E8FF;font-size:14px;line-height:1.85;max-width:700px;}}
 .hero-kicker{{display:inline-block;border:1px solid #ffffff45;background:#ffffff15;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.8px;}}
-.hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
+.hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}}
+.welcome-hero{{position:relative;isolation:isolate;min-height:180px;padding:18px 18px 16px;border-radius:15px;overflow:hidden;background:linear-gradient(112deg,#172554 0%,#2947C7 63%,#3659DE 100%);box-shadow:0 10px 24px #2947c729;}}
+.welcome-hero .welcome-copy{{position:relative;z-index:2;width:69%;}}
+.welcome-hero .hero-kicker{{font-size:8px;padding:4px 7px;letter-spacing:.35px;}}
+.welcome-hero h1{{font-size:clamp(19px,2vw,24px);line-height:1.08;letter-spacing:-.35px;margin:10px 0 9px;max-width:255px;}}
+.welcome-hero p{{font-size:9px;line-height:1.55;max-width:245px;margin:0;color:#E7ECFF;}}
+.welcome-mascot-combined{{position:absolute;z-index:1;right:-5px;bottom:-4px;width:47%;height:88%;object-fit:contain;object-position:center bottom;pointer-events:none;}}
+.welcome-mascot-pair{{position:absolute;z-index:1;right:0;bottom:0;width:43%;height:80%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
+.welcome-mascot-pair img{{width:53%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 3px #101c4b22);}}
+.welcome-hero .hero-decoration{{display:none;}}
+@media(max-width:900px){{.welcome-hero{{min-height:172px;padding:17px 15px;}}.welcome-hero .welcome-copy{{width:70%;}}.welcome-hero h1{{font-size:21px;}}}}
+@media(max-width:600px){{.welcome-hero{{min-height:165px;padding:16px 13px;border-radius:14px;}}.welcome-hero .welcome-copy{{width:70%;}}.welcome-hero h1{{font-size:19px;margin:9px 0 7px;}}.welcome-hero p{{font-size:8px;line-height:1.45;}}.welcome-mascot-combined{{width:45%;height:80%;right:-5px;}}.welcome-mascot-pair{{width:42%;height:72%;}}}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
 .panel{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:20px;padding:22px;box-shadow:0 8px 26px #18274b0a;}}
 .panel-title{{font-size:18px;font-weight:800;color:#172554;margin-bottom:6px;}}
 .panel-subtitle{{font-size:12px;color:#758096;line-height:1.75;}}
@@ -245,7 +257,26 @@ if step == 1:
 elif step == 2:
     left, right = st.columns([1, 1.15], gap="large")
     with left:
-        st.markdown('<div class="hero"><div class="hero-decoration">🐱</div><span class="hero-kicker">PAWSCAN MEMBER</span><h1>Halo,<br>Teman Baru!</h1><p>Lengkapi identitas singkat sebelum memulai analisis gambar.</p></div>', unsafe_allow_html=True)
+        mascot_uri = bg_uri(MASCOT_PATH)
+        cat_uri = bg_uri(CAT_ICON_PATH)
+        dog_uri = bg_uri(DOG_ICON_PATH)
+        if mascot_uri:
+            mascot_markup = f'<img class="welcome-mascot-combined" src="{mascot_uri}" alt="Maskot kucing dan anjing PawScan">'
+        else:
+            mascot_items = ""
+            if cat_uri:
+                mascot_items += f'<img src="{cat_uri}" alt="Maskot kucing PawScan">'
+            if dog_uri:
+                mascot_items += f'<img src="{dog_uri}" alt="Maskot anjing PawScan">'
+            mascot_markup = f'<div class="welcome-mascot-pair">{mascot_items}</div>' if mascot_items else ""
+        st.markdown(
+            '<div class="welcome-hero"><div class="welcome-copy">'
+            '<span class="hero-kicker">PAWSCAN MEMBER</span>'
+            '<h1>Halo, Selamat<br>Bergabung di PawScan!</h1>'
+            '<p>Hanya satu langkah lagi untuk memulai petualangan analisis jejak kaki kesayanganmu!</p>'
+            '</div>' + mascot_markup + '</div>',
+            unsafe_allow_html=True,
+        )
     with right:
         st.markdown('<div class="panel"><div class="panel-title">📝 Registrasi Singkat</div><div class="panel-subtitle">Isi data berikut untuk melanjutkan ke sesi analisis.</div>', unsafe_allow_html=True)
         full_name = st.text_input("Nama lengkap", value=st.session_state.full_name, placeholder="Masukkan nama lengkap")
