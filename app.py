@@ -23,7 +23,7 @@ DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
 CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
 DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
-MASCOT_PATH = ASSET_DIR / "maskot_pawscan.png.png"  # Opsional: maskot kucing + anjing dalam satu PNG transparan
+MASCOT_PATH = ASSET_DIR / "maskot_pawscan.png"  # Opsional: maskot kucing + anjing dalam satu PNG transparan
 EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.jpg"
 LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
 HOME_ICON_PATH = ASSET_DIR / "beranda.png"
@@ -82,17 +82,17 @@ h1,h2,h3,h4{{font-weight:700;}}
 .hero p{{color:#E0E8FF;font-size:14px;line-height:1.85;max-width:700px;}}
 .hero-kicker{{display:inline-block;border:1px solid #ffffff45;background:#ffffff15;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.8px;}}
 .hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}}
-.welcome-hero{{position:relative;isolation:isolate;min-height:220px;padding:23px 18px 20px;border-radius:17px;overflow:visible;background:linear-gradient(112deg,#172554 0%,#2446C7 55%,#3659E8 100%);box-shadow:0 12px 28px #2947c729;margin-bottom:12px;}}
-.welcome-hero .welcome-copy{{position:relative;z-index:3;width:72%;}}
+.welcome-hero{{position:relative;isolation:isolate;min-height:232px;padding:23px 18px 20px;border-radius:17px;overflow:visible;background:linear-gradient(112deg,#172554 0%,#2446C7 55%,#3659E8 100%);box-shadow:0 12px 28px #2947c729;margin-bottom:12px;}}
+.welcome-hero .welcome-copy{{position:relative;z-index:3;width:52%;max-width:245px;}}
 .welcome-hero .hero-kicker{{font-size:8px;padding:4px 8px;letter-spacing:.4px;color:#fff;border-color:#ffffff60;background:#ffffff16;}}
-.welcome-hero h1{{color:#fff!important;font-size:clamp(23px,2.25vw,30px);line-height:1.08;letter-spacing:-.55px;font-weight:800;margin:13px 0 10px;max-width:310px;text-shadow:0 1px 1px #101c4b12;}}
-.welcome-hero p{{font-size:10px;line-height:1.55;max-width:285px;margin:0;color:#F0F4FF;}}
-.welcome-mascot-combined{{position:absolute;z-index:2;right:-18px;bottom:-15px;width:70%;height:118%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
-.welcome-mascot-pair{{position:absolute;z-index:2;right:-12px;bottom:-13px;width:57%;height:108%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
+.welcome-hero h1{{color:#fff!important;font-size:clamp(23px,2.25vw,30px);line-height:1.08;letter-spacing:-.55px;font-weight:800;margin:13px 0 10px;max-width:225px;text-shadow:0 1px 1px #101c4b12;}}
+.welcome-hero p{{font-size:10px;line-height:1.5;max-width:215px;margin:0;color:#F0F4FF;}}
+.welcome-mascot-combined{{position:absolute;z-index:2;right:-20px;bottom:-15px;width:60%;height:108%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
+.welcome-mascot-pair{{position:absolute;z-index:2;right:-15px;bottom:-13px;width:53%;height:103%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
 .welcome-mascot-pair img{{width:55%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 3px #101c4b22);}}
 .welcome-hero .hero-decoration{{display:none;}}
-@media(max-width:900px){{.welcome-hero{{min-height:210px;padding:20px 16px;}}.welcome-hero .welcome-copy{{width:73%;}}.welcome-hero h1{{font-size:25px;max-width:285px;}}.welcome-mascot-combined{{width:70%;height:112%;right:-14px;bottom:-12px;}}.welcome-mascot-pair{{width:56%;height:102%;right:-10px;bottom:-10px;}}}}
-@media(max-width:600px){{.welcome-hero{{min-height:195px;padding:17px 13px;border-radius:14px;margin-bottom:18px;}}.welcome-hero .welcome-copy{{width:76%;}}.welcome-hero h1{{font-size:22px;line-height:1.08;margin:11px 0 8px;max-width:245px;}}.welcome-hero p{{font-size:9px;line-height:1.45;max-width:220px;}}.welcome-mascot-combined{{width:70%;height:100%;right:-13px;bottom:-10px;}}.welcome-mascot-pair{{width:55%;height:90%;right:-8px;bottom:-8px;}}}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
+@media(max-width:900px){{.welcome-hero{{min-height:232px;padding:20px 16px;}}.welcome-hero .welcome-copy{{width:52%;max-width:235px;}}.welcome-hero h1{{font-size:24px;max-width:220px;}}.welcome-hero p{{max-width:205px;font-size:9.5px;}}.welcome-mascot-combined{{width:60%;height:105%;right:-15px;bottom:-12px;}}.welcome-mascot-pair{{width:53%;height:100%;right:-10px;bottom:-10px;}}}}
+@media(max-width:600px){{.welcome-hero{{min-height:225px;padding:17px 13px;border-radius:14px;margin-bottom:18px;}}.welcome-hero .welcome-copy{{width:53%;max-width:210px;}}.welcome-hero h1{{font-size:21px;line-height:1.08;margin:11px 0 8px;max-width:195px;}}.welcome-hero p{{font-size:8.5px;line-height:1.45;max-width:180px;}}.welcome-mascot-combined{{width:59%;height:94%;right:-12px;bottom:-10px;}}.welcome-mascot-pair{{width:52%;height:88%;right:-8px;bottom:-8px;}}}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
 .panel{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:20px;padding:22px;box-shadow:0 8px 26px #18274b0a;}}
 .panel-title{{font-size:18px;font-weight:800;color:#172554;margin-bottom:6px;}}
 .panel-subtitle{{font-size:12px;color:#758096;line-height:1.75;}}
