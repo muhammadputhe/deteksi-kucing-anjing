@@ -134,9 +134,13 @@ h1,h2,h3,h4{{font-weight:700;}}
 .analysis-tip{{background:linear-gradient(135deg,#F5F8FF,#FBF9FF);border:1px solid #E1E8FB;border-radius:18px;padding:18px 20px;}}
 .analysis-tip-title{{font-family:'Poppins',sans-serif;color:#1E327A;font-weight:800;font-size:15px;margin-bottom:8px;}}
 .analysis-tip-copy{{font-size:12px;line-height:1.9;color:#667594;}}
-.stButton button[kind="primary"]{{background:linear-gradient(100deg,#168BFF,#4263EB 55%,#8458F6)!important;color:white!important;border:1px solid #ffffff50!important;border-radius:15px!important;min-height:54px!important;font-size:15px!important;box-shadow:0 9px 22px #4263eb35!important;transition:transform .18s ease,box-shadow .18s ease!important;}}
-.stButton button[kind="primary"]:hover{{transform:translateY(-2px);box-shadow:0 13px 27px #4263eb45!important;}}
-.stButton button[kind="primary"]:disabled{{background:linear-gradient(100deg,#D9E5F8,#C9D5EC)!important;color:#FFFFFF!important;box-shadow:none!important;transform:none!important;}}
+.stButton button[kind="primary"]{{background:linear-gradient(100deg,#24B8FF 0%,#0789F9 100%)!important;color:white!important;border:1px solid #ffffff70!important;border-radius:999px!important;min-height:58px!important;font-size:16px!important;font-weight:800!important;box-shadow:0 8px 18px #129af03d, inset 0 1px 0 #ffffff65!important;transition:background .2s ease,transform .2s ease,box-shadow .2s ease!important;position:relative!important;}}
+.stButton button[kind="primary"]:hover{{background:linear-gradient(100deg,#168BFF 0%,#4263EB 55%,#8458F6 100%)!important;transform:translateY(-1px);box-shadow:0 10px 24px #6954f04a,0 0 0 2px #ffffffaa!important;}}
+.stButton button[kind="primary"]:disabled{{background:linear-gradient(100deg,#D9E7FA,#C8D5EC)!important;color:#FFFFFF!important;border-color:#ffffff55!important;box-shadow:none!important;transform:none!important;opacity:1!important;}}
+.st-key-start_analysis_button button{{display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;padding:0 54px!important;position:relative!important;}}
+.st-key-start_analysis_button button::before{{content:"✦";position:absolute;left:clamp(22px,5vw,42px);font-size:29px;line-height:1;color:#fff;text-shadow:0 1px 8px #ffffff75;}}
+.st-key-start_analysis_button button::after{{content:"→";position:absolute;right:clamp(22px,5vw,42px);font-size:28px;font-weight:500;line-height:1;color:#fff;}}
+.st-key-start_analysis_button button:disabled::before,.st-key-start_analysis_button button:disabled::after{{color:#fff;}}
 @media(max-width:600px){{.analysis-heading{{padding:18px 16px;gap:10px;}}.analysis-heading .analysis-heading-icon{{width:48px;height:48px;flex-basis:48px;}}.analysis-status{{padding:12px;gap:10px;}}.analysis-status .status-icon{{width:52px;height:52px;flex-basis:52px;}}}}
 
 .stButton button[kind="primary"]{{background:linear-gradient(100deg,#4263EB,#8B5CF6);color:white;}}
@@ -427,15 +431,7 @@ elif step == 3:
 elif step == 4:
     mode = st.session_state.analysis_mode
     brain_uri = bg_uri(ASSET_DIR / "icon_ai_brain.png")
-    image_ready = st.session_state.get("pawscan_upload") is not None
-    status_uri = bg_uri(ASSET_DIR / ("icon_image_ready.png" if image_ready else "icon_upload.png"))
-    status_class = "ready" if image_ready else "waiting"
-    status_title = "Gambar siap dianalisis" if image_ready else "Siapkan foto hewanmu"
-    status_copy = (
-        "Gambar berhasil dipilih. Kamu bisa langsung memulai analisis AI."
-        if image_ready
-        else "Unggah foto kucing atau anjing yang jelas. Format JPG, JPEG, dan PNG didukung."
-    )
+    status_uri = bg_uri(ASSET_DIR / ("icon_image_ready.png" if st.session_state.get("pawscan_image_ready", False) else "icon_upload.png"))
     st.markdown(
         f'<div class="analysis-heading"><img class="analysis-heading-icon" src="{brain_uri}" alt="AI PawScan">'
         f'<div><div class="hero-kicker">SESI 4 · SMART ANALYSIS</div><h1>Unggah & Analisis</h1>'
@@ -444,9 +440,9 @@ elif step == 4:
     )
     show_member_card(compact=True)
     st.markdown(
-        f'<div class="analysis-status {status_class}"><img class="status-icon" src="{status_uri}" alt="Status unggah">'
-        f'<div><div class="status-title">{status_title}</div>'
-        f'<div class="status-copy">{status_copy}</div></div></div>',
+        f'<div class="analysis-status waiting"><img class="status-icon" src="{status_uri}" alt="Status unggah">'
+        f'<div><div class="status-title">Siapkan foto hewanmu</div>'
+        f'<div class="status-copy">Gunakan foto kucing atau anjing yang jelas. Format JPG, JPEG, dan PNG didukung.</div></div></div>',
         unsafe_allow_html=True,
     )
     left, right = st.columns([1.08, 0.92], gap="large")
@@ -472,7 +468,7 @@ elif step == 4:
         else:
             yolo_conf = 0.25
         st.write("")
-        if st.button("✨  Mulai Analisis AI  →", type="primary", use_container_width=True, disabled=(image is None)):
+        if st.button("Mulai Analisis", type="primary", use_container_width=True, disabled=(image is None), key="start_analysis_button"):
             try:
                 if mode == "Klasifikasi CNN":
                     if not CLASSIFIER_PATH.exists():
