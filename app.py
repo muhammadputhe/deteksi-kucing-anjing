@@ -310,21 +310,35 @@ progress_captions = "".join(f'<div class="progress-caption {"active" if i == ste
 st.markdown(f'<div class="progress-wrap">{progress}</div><div class="progress-caption-wrap">{progress_captions}</div><div class="step-label">SESI {step} DARI 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
 if step == 1:
-    st.markdown("""
-    <div class="hero">
-    <span class="hero-kicker">SMART PET RECOGNITION</span>
-    <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
-    <p>Selamat datang di PawScan! Pilih metode klasifikasi CNN untuk mengenali jenis hewan, atau deteksi objek menggunakan YOLO untuk menemukan dan menandai hewan dalam gambar. Ikuti lima sesi sederhana untuk melihat hasilnya.</p>
+    home_mascot_uri = bg_uri(MASCOT_PATH)
+    home_mascot = f'<img class="home-hero-mascot" src="{home_mascot_uri}" alt="Maskot kucing dan anjing PawScan">' if home_mascot_uri else ''
+    st.markdown(f"""
+    <div class="home-hero">
+      <div class="home-hero-copy">
+        <span class="hero-kicker">SMART PET RECOGNITION</span>
+        <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
+        <p>Selamat datang di PawScan! Pilih metode klasifikasi CNN untuk mengenali jenis hewan, atau deteksi objek menggunakan YOLO untuk menemukan dan menandai hewan dalam gambar. Ikuti lima sesi sederhana untuk melihat hasilnya.</p>
+      </div>
+      {home_mascot}
     </div>""", unsafe_allow_html=True)
     st.write("")
+    # Kartu langkah menggunakan gambar PNG siap pakai; tidak perlu membangun ulang desain dengan HTML/CSS.
+    paw_uri = bg_uri(PAW_PRINT_PATH)
+    if paw_uri:
+        st.markdown(
+            f'<img class="paw-decor paw-one" src="{paw_uri}" alt="" aria-hidden="true">'
+            f'<img class="paw-decor paw-two" src="{paw_uri}" alt="" aria-hidden="true">'
+            f'<img class="paw-decor paw-three" src="{paw_uri}" alt="" aria-hidden="true">',
+            unsafe_allow_html=True,
+        )
+    card_paths = [STEP_CARD_1_PATH, STEP_CARD_2_PATH, STEP_CARD_3_PATH]
     c1, c2, c3 = st.columns(3, gap="medium")
-    for col, num, title, desc in [
-        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus."),
-        (c2, "02", "Pilih metode", "Tentukan CNN atau deteksi YOLO."),
-        (c3, "03", "Unggah & lihat hasil", "Unggah foto dan baca ringkasan AI."),
-    ]:
+    for col, card_path in zip((c1, c2, c3), card_paths):
         with col:
-            st.markdown(f'<div class="panel"><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
+            if card_path.exists():
+                st.image(str(card_path), use_container_width=True)
+            else:
+                st.warning(f"Aset kartu tidak ditemukan: {card_path.name}")
     st.write("")
     if st.button("Mulai Sekarang →", type="primary", use_container_width=True):
         go(2)
