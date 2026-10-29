@@ -569,7 +569,12 @@ elif step == 5:
                 image_caption = "Gambar dengan kotak deteksi YOLO" if has_detection else "Gambar asli yang dianalisis"
                 st.image(display_image, caption=image_caption, use_container_width=True)
                 out = io.BytesIO()
-                Image.fromarray(display_image).save(out, format="PNG")
+                # `result["image"]` bisa berupa objek PIL, sedangkan `result["annotated"]`
+                # biasanya berupa array NumPy. Tangani kedua tipe agar unduhan tidak error.
+                if isinstance(display_image, Image.Image):
+                    display_image.save(out, format="PNG")
+                else:
+                    Image.fromarray(np.asarray(display_image)).save(out, format="PNG")
                 if DOWNLOAD_ICON_PATH.exists():
                     st.image(str(DOWNLOAD_ICON_PATH), width=34)
                 download_label = "Unduh gambar hasil YOLO" if has_detection else "Unduh gambar asli"
