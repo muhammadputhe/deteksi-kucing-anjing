@@ -89,17 +89,31 @@ h1,h2,h3,h4{{font-weight:700;}}
 .hero p{{color:#E0E8FF;font-size:14px;line-height:1.85;max-width:700px;}}
 .hero-kicker{{display:inline-block;border:1px solid #ffffff45;background:#ffffff15;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.8px;}}
 .hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}}
+.home-hero{{position:relative;isolation:isolate;overflow:hidden;min-height:300px;padding:34px;border-radius:24px;color:white;background:linear-gradient(120deg,#172554 0%,#2947C7 58%,#4263EB 100%);box-shadow:0 16px 40px #2947c729;}}
+.home-hero-copy{{position:relative;z-index:2;max-width:66%;}}
+.home-hero p{{max-width:690px;}}
+.home-hero-mascot{{position:absolute;z-index:1;right:18px;bottom:-12px;width:32%;height:95%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 10px #101c4b25);pointer-events:none;}}
+.step-card{{height:100%;min-height:145px;padding:20px;border:1px solid #E3E9F5;border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}}
+.step-card:hover{{transform:translateY(-5px);box-shadow:0 15px 30px #2947c71a;border-color:#C8D5FF;}}
+.step-icon{{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,#EAF0FF,#F3EDFF);font-size:22px;margin:0 0 12px;}}
+.step-card .pill{{display:inline-block;}}
+@keyframes pawscanArrow{{0%,100%{{transform:translateX(0)}}50%{{transform:translateX(4px)}}}}
+@media(hover:hover){{.stButton>button[kind="primary"]:hover{{transform:translateY(-2px);box-shadow:0 12px 25px #1991ff45;filter:saturate(1.08);}}.stButton>button[kind="primary"]:hover span{{animation:pawscanArrow .65s ease-in-out infinite;}}}}
+.stButton>button[kind="primary"]{{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;border-radius:999px!important;box-shadow:0 7px 20px #1991ff2b;}}
+@media(max-width:900px){{.home-hero{{min-height:285px;padding:28px;}}.home-hero-copy{{max-width:68%;}}.home-hero-mascot{{width:34%;right:8px;}}.step-card{{padding:17px;}}}}
+@media(max-width:600px){{.home-hero{{min-height:285px;padding:22px 18px;border-radius:20px;}}.home-hero-copy{{max-width:72%;}}.home-hero h1{{font-size:clamp(24px,6vw,32px);}}.home-hero p{{font-size:11px;line-height:1.6;max-width:100%;}}.home-hero-mascot{{width:42%;height:64%;right:-4px;bottom:-4px;opacity:.98;}}.step-card{{min-height:0;padding:16px;}}}}
+@media(prefers-reduced-motion:reduce){{.step-card,.stButton>button[kind="primary"]{{transition:none!important;}}.step-card:hover,.stButton>button[kind="primary"]:hover{{transform:none!important;}}}}
 .welcome-hero{{position:relative;isolation:isolate;min-height:232px;padding:23px 18px 20px;border-radius:17px;overflow:visible;background:linear-gradient(112deg,#172554 0%,#2446C7 55%,#3659E8 100%);box-shadow:0 12px 28px #2947c729;margin-bottom:12px;}}
 .welcome-hero .welcome-copy{{position:relative;z-index:3;width:52%;max-width:245px;}}
 .welcome-hero .hero-kicker{{font-size:8px;padding:4px 8px;letter-spacing:.4px;color:#fff;border-color:#ffffff60;background:#ffffff16;}}
-.welcome-hero h1{{color:#fff!important;font-size:clamp(25px,2.5vw,32px);line-height:1.08;letter-spacing:-.55px;font-weight:800;margin:13px 0 10px;max-width:225px;text-shadow:0 1px 1px #101c4b12;}}
+.welcome-hero h1{{color:#fff!important;font-size:clamp(23px,2.25vw,30px);line-height:1.08;letter-spacing:-.55px;font-weight:800;margin:13px 0 10px;max-width:225px;text-shadow:0 1px 1px #101c4b12;}}
 .welcome-hero p{{font-size:10px;line-height:1.5;max-width:215px;margin:0;color:#F0F4FF;}}
-.welcome-mascot-combined{{position:absolute;z-index:2;right:-87px;bottom:-15px;width:86%;height:116%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
-.welcome-mascot-pair{{position:absolute;z-index:2;right:-22px;bottom:-13px;width:59%;height:110%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
-.welcome-mascot-pair img{{width:58%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 3px #101c4b22);}}
+.welcome-mascot-combined{{position:absolute;z-index:2;right:-87px;bottom:-15px;width:86%;height:108%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
+.welcome-mascot-pair{{position:absolute;z-index:2;right:-15px;bottom:-13px;width:53%;height:103%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
+.welcome-mascot-pair img{{width:55%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 3px #101c4b22);}}
 .welcome-hero .hero-decoration{{display:none;}}
-@media(max-width:900px){{.welcome-hero{{min-height:232px;padding:20px 16px;}}.welcome-hero .welcome-copy{{width:52%;max-width:235px;}}.welcome-hero h1{{font-size:26px;max-width:225px;}}.welcome-hero p{{max-width:205px;font-size:9.5px;}}.welcome-mascot-combined{{width:65%;height:111%;right:-21px;bottom:-12px;}}.welcome-mascot-pair{{width:58%;height:106%;right:-17px;bottom:-10px;}}}}
-@media(max-width:600px){{.welcome-hero{{min-height:225px;padding:17px 13px;border-radius:14px;margin-bottom:18px;}}.welcome-hero .welcome-copy{{width:53%;max-width:210px;}}.welcome-hero h1{{font-size:22px;line-height:1.08;margin:11px 0 8px;max-width:198px;}}.welcome-hero p{{font-size:8.5px;line-height:1.45;max-width:180px;}}.welcome-mascot-combined{{width:63%;height:98%;right:-17px;bottom:-10px;}}.welcome-mascot-pair{{width:56%;height:92%;right:-13px;bottom:-8px;}}}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
+@media(max-width:900px){{.welcome-hero{{min-height:232px;padding:20px 16px;}}.welcome-hero .welcome-copy{{width:52%;max-width:235px;}}.welcome-hero h1{{font-size:24px;max-width:220px;}}.welcome-hero p{{max-width:205px;font-size:9.5px;}}.welcome-mascot-combined{{width:60%;height:105%;right:-15px;bottom:-12px;}}.welcome-mascot-pair{{width:53%;height:100%;right:-10px;bottom:-10px;}}}}
+@media(max-width:600px){{.welcome-hero{{min-height:225px;padding:17px 13px;border-radius:14px;margin-bottom:18px;}}.welcome-hero .welcome-copy{{width:53%;max-width:210px;}}.welcome-hero h1{{font-size:21px;line-height:1.08;margin:11px 0 8px;max-width:195px;}}.welcome-hero p{{font-size:8.5px;line-height:1.45;max-width:180px;}}.welcome-mascot-combined{{width:59%;height:94%;right:-12px;bottom:-10px;}}.welcome-mascot-pair{{width:52%;height:88%;right:-8px;bottom:-8px;}}}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
 .panel{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:20px;padding:22px;box-shadow:0 8px 26px #18274b0a;}}
 .panel-title{{font-size:18px;font-weight:800;color:#172554;margin-bottom:6px;}}
 .panel-subtitle{{font-size:12px;color:#758096;line-height:1.75;}}
@@ -299,21 +313,26 @@ progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}">
 st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
 if step == 1:
-    st.markdown("""
-    <div class="hero">
-    <span class="hero-kicker">SMART PET RECOGNITION</span>
-    <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
-    <p>Selamat datang di PawScan! Pilih metode klasifikasi CNN untuk mengenali jenis hewan, atau deteksi objek menggunakan YOLO untuk menemukan dan menandai hewan dalam gambar. Ikuti lima sesi sederhana untuk melihat hasilnya.</p>
+    home_mascot_uri = bg_uri(MASCOT_PATH)
+    home_mascot = f'<img class="home-hero-mascot" src="{home_mascot_uri}" alt="Maskot kucing dan anjing PawScan">' if home_mascot_uri else ''
+    st.markdown(f"""
+    <div class="home-hero">
+      <div class="home-hero-copy">
+        <span class="hero-kicker">SMART PET RECOGNITION</span>
+        <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
+        <p>Selamat datang di PawScan! Pilih metode klasifikasi CNN untuk mengenali jenis hewan, atau deteksi objek menggunakan YOLO untuk menemukan dan menandai hewan dalam gambar. Ikuti lima sesi sederhana untuk melihat hasilnya.</p>
+      </div>
+      {home_mascot}
     </div>""", unsafe_allow_html=True)
     st.write("")
     c1, c2, c3 = st.columns(3, gap="medium")
-    for col, num, title, desc in [
-        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus."),
-        (c2, "02", "Pilih metode", "Tentukan CNN atau deteksi YOLO."),
-        (c3, "03", "Unggah & lihat hasil", "Unggah foto dan baca ringkasan AI."),
+    for col, num, icon, title, desc in [
+        (c1, "01", "👤", "Isi registrasi", "Masukkan nama dan kampus."),
+        (c2, "02", "🧠", "Pilih metode", "Tentukan CNN atau deteksi YOLO."),
+        (c3, "03", "🐾", "Unggah & lihat hasil", "Unggah foto dan baca ringkasan AI."),
     ]:
         with col:
-            st.markdown(f'<div class="panel"><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="step-card"><div class="step-icon">{icon}</div><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
     st.write("")
     if st.button("Mulai Sekarang →", type="primary", use_container_width=True):
         go(2)
