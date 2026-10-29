@@ -107,12 +107,85 @@ h1,h2,h3,h4{{font-weight:700;}}
 .home-paw-pattern .spark-a{{left:43%;top:38%;font-size:22px;opacity:.18;}}
 .home-paw-pattern .spark-b{{left:72%;top:44%;font-size:17px;opacity:.15;}}
 .home-hero-copy{{position:relative;z-index:2;max-width:66%;}}
+
+/* Motif PawScan yang lebih terlihat pada seluruh panel biru */
+.hero,.welcome-hero,.home-hero,.analysis-heading{{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+}}
+.hero:before,.welcome-hero:before,.analysis-heading:before{{
+    content:"🐾";
+    position:absolute;
+    z-index:0;
+    right:24%;
+    top:12%;
+    font-size:clamp(42px,5vw,68px);
+    line-height:1;
+    opacity:.24;
+    filter:grayscale(1) brightness(0) invert(1);
+    transform:rotate(-18deg);
+    pointer-events:none;
+}}
+.hero:after,.welcome-hero:after,.analysis-heading:after{{
+    content:"🐾      ✦       🐾";
+    white-space:pre;
+    position:absolute;
+    z-index:0;
+    right:5%;
+    bottom:8%;
+    font-size:clamp(25px,3vw,42px);
+    letter-spacing:18px;
+    line-height:1;
+    opacity:.19;
+    filter:grayscale(1) brightness(0) invert(1);
+    transform:rotate(12deg);
+    pointer-events:none;
+}}
+.home-hero:before{{
+    content:"";
+    position:absolute;
+    z-index:0;
+    width:260px;height:260px;
+    left:36%;top:-155px;
+    border:2px solid #BBD2FF65;
+    border-radius:50%;
+    box-shadow:0 0 0 24px #BBD2FF18,0 0 0 52px #BBD2FF12;
+    pointer-events:none;
+}}
+.home-hero:after{{
+    content:"🐾       ✦       🐾";
+    white-space:pre;
+    position:absolute;
+    z-index:0;
+    right:20%;
+    bottom:13%;
+    font-size:clamp(30px,3.5vw,48px);
+    letter-spacing:20px;
+    line-height:1;
+    opacity:.26;
+    filter:grayscale(1) brightness(0) invert(1);
+    transform:rotate(-12deg);
+    pointer-events:none;
+}}
+.welcome-hero:before{{right:27%;top:12%;}}
+.welcome-hero:after{{right:8%;bottom:12%;}}
+.analysis-heading:before{{right:19%;top:16%;}}
+.analysis-heading:after{{right:4%;bottom:12%;}}
+.hero .hero-decoration{{z-index:1;}}
+.home-hero-copy{{z-index:2;}}
+.home-hero-mascot{{z-index:2;}}
+@media(max-width:600px){{
+    .hero:before,.welcome-hero:before,.analysis-heading:before{{font-size:34px;right:25%;opacity:.16;}}
+    .hero:after,.welcome-hero:after,.analysis-heading:after{{font-size:22px;letter-spacing:8px;opacity:.14;right:2%;}}
+    .home-hero:after{{font-size:25px;letter-spacing:8px;right:13%;opacity:.18;}}
+}}
 .home-hero p{{max-width:690px;}}
 .home-hero-mascot{{position:absolute;z-index:1;right:18px;bottom:-12px;width:32%;height:95%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 10px #101c4b25);pointer-events:none;}}
 .step-card{{height:100%;min-height:145px;padding:20px;border:1px solid #E3E9F5;border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}}
 div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease;}}@media(hover:hover){{div[data-testid='stImage'] img:hover{{transform:translateY(-3px);box-shadow:0 15px 30px #2947c71a;}}}}.step-card-image{{display:block;width:100%;height:auto;border-radius:20px;box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease;}}
 .step-card-image:hover{{transform:translateY(-3px);box-shadow:0 15px 30px #2947c71a;}}
-.paw-decor{{position:fixed;z-index:0;width:54px;height:54px;object-fit:contain;opacity:.12;pointer-events:none;filter:saturate(1.05);}}
+.paw-decor{{position:fixed;z-index:0;width:54px;height:54px;object-fit:contain;opacity:.22;pointer-events:none;filter:brightness(0) saturate(100%) invert(83%) sepia(21%) saturate(1040%) hue-rotate(190deg) brightness(103%) contrast(101%);}}
 .paw-decor.paw-one{{left:12px;top:34%;transform:rotate(-18deg);}}
 .paw-decor.paw-two{{right:18px;top:15%;width:42px;height:42px;transform:rotate(16deg);}}
 .paw-decor.paw-three{{right:8px;bottom:10%;width:62px;height:62px;transform:rotate(-12deg);}}
@@ -178,7 +251,6 @@ div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b
 .registration-benefit{{display:flex;gap:8px;align-items:center;margin-top:13px;color:#72809B;font-size:10px;line-height:1.6;}}
 .registration-benefit span{{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:7px;background:#E8F8F0;color:#159565;font-size:12px;flex:0 0 20px;}}
 .welcome-hero{{box-shadow:0 18px 42px #2947c72b;}}
-.welcome-hero:before{{content:"";position:absolute;width:190px;height:190px;right:-60px;top:-90px;border:1px solid #ffffff18;border-radius:50%;pointer-events:none;}}
 @media(max-width:900px){{.registration-heading{{padding:19px;}}.registration-form-card{{padding:19px;}}}}
 @media(max-width:600px){{.registration-heading{{gap:10px;padding:16px;border-radius:17px;margin-bottom:14px;}}.registration-heading-icon{{width:37px;height:37px;flex-basis:37px;font-size:18px;border-radius:12px;}}.registration-heading-title{{font-size:18px;}}.registration-heading-copy{{font-size:11px;}}.registration-form-card{{padding:17px 15px;border-radius:17px;}}.registration-helper{{font-size:10px;}}}}
 .stButton button,.stDownloadButton button{{border-radius:12px;font-weight:800;min-height:44px;border:0;}}
