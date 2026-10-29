@@ -297,7 +297,7 @@ def show_loading_visual(message):
         st.info(message)
 
 def footer():
-    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>AI Animal Recognition · CNN & YOLO | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>Project UTS Praktikum Big Data | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
 
 def go(step):
     st.session_state.step = step
