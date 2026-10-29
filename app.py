@@ -563,12 +563,17 @@ elif step == 5:
             if result["mode"] == "Klasifikasi CNN":
                 st.image(result["image"], caption="Gambar yang dianalisis", use_container_width=True)
             else:
-                st.image(result["annotated"], caption="Gambar dengan kotak deteksi YOLO", use_container_width=True)
+                # Jika tidak ada kelas hewan yang dikenali, tampilkan foto asli tanpa kotak yang membingungkan.
+                has_detection = bool(result.get("best"))
+                display_image = result["annotated"] if has_detection else result["image"]
+                image_caption = "Gambar dengan kotak deteksi YOLO" if has_detection else "Gambar asli yang dianalisis"
+                st.image(display_image, caption=image_caption, use_container_width=True)
                 out = io.BytesIO()
-                Image.fromarray(result["annotated"]).save(out, format="PNG")
+                Image.fromarray(display_image).save(out, format="PNG")
                 if DOWNLOAD_ICON_PATH.exists():
                     st.image(str(DOWNLOAD_ICON_PATH), width=34)
-                st.download_button("Unduh gambar hasil YOLO", data=out.getvalue(), file_name="hasil_pawscan.png", mime="image/png", use_container_width=True)
+                download_label = "Unduh gambar hasil YOLO" if has_detection else "Unduh gambar asli"
+                st.download_button(download_label, data=out.getvalue(), file_name="hasil_pawscan.png", mime="image/png", use_container_width=True)
         with right:
             if result["mode"] == "Klasifikasi CNN":
                 predictions = result["predictions"]
@@ -592,26 +597,20 @@ elif step == 5:
                     st.markdown(confidence_rows(ranked), unsafe_allow_html=True)
                     summary = f"YOLO mendeteksi {total} objek. Rinciannya: {counts.get('Anjing', 0)} anjing dan {counts.get('Kucing', 0)} kucing. Nilai confidence tertinggi per kelas ditampilkan di atas."
                 else:
-                    st.warning(
-                        "Tidak ada kelas kucing/anjing yang cocok dengan label yang dikenali. "
-                        "Detail prediksi mentah model ditampilkan di bawah."
+                    st.markdown(
+                        '<div class="result-banner">'
+                        '<div class="result-label">HASIL PEMINDAIAN</div>'
+                        '<div class="result-answer">Belum ada hewan terdeteksi</div>'
+                        '<div style="color:#5265A8;font-size:13px;margin-top:8px">'
+                        'Coba unggah foto kucing atau anjing yang lebih jelas, dengan pencahayaan cukup '
+                        'dan tubuh hewan terlihat.'
+                        '</div></div>',
+                        unsafe_allow_html=True,
                     )
-                    st.caption(
-                        f"Confidence tetap: {result.get('yolo_confidence', YOLO_CONFIDENCE):.2f}"
-                    )
-                    st.write("Nama kelas model:", result.get("model_names", {}))
-                    raw_detections = result.get("raw_detections", [])
-                    if raw_detections:
-                        st.write("Prediksi mentah YOLO:")
-                        st.dataframe(raw_detections, use_container_width=True)
-                    else:
-                        st.info(
-                            "YOLO tidak menghasilkan bounding box pada confidence 0.25. "
-                            "Untuk diagnosis sementara, ubah YOLO_CONFIDENCE menjadi 0.01."
-                        )
                     summary = (
-                        "Belum ada deteksi kucing/anjing yang dapat dipetakan dari hasil model. "
-                        "Periksa nama kelas model dan prediksi mentah di atas."
+                        "PawScan belum dapat mengenali kucing atau anjing pada gambar ini. "
+                        "Coba unggah gambar lain yang lebih jelas. Hasil ini tidak selalu berarti "
+                        "gambar tidak memiliki hewan."
                     )
         st.write("")
         st.markdown('<div class="panel"><div class="panel-title">🧾 Ringkasan Hasil</div><div class="panel-subtitle">', unsafe_allow_html=True)
