@@ -149,7 +149,7 @@ div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b
 .conf-fill{{height:100%;background:linear-gradient(90deg,#4263EB,#8B5CF6);border-radius:99px;}}
 .conf-pct{{width:55px;text-align:right;color:#344054;font-size:12px;font-weight:800;}}
 .empty-state{{text-align:center;padding:26px 15px;border:1px dashed #CFD8EB;border-radius:16px;background:#ffffffc9;color:#667085;line-height:1.8;}}
-.footer{{text-align:center;color:#8A65B5;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
+.footer{{text-align:center;color:#2D4FD7;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
 /* Registration refresh: clearer hierarchy, calmer surfaces, and responsive layout. */
 .registration-heading{{display:flex;align-items:flex-start;gap:13px;padding:22px 23px;margin-bottom:18px;border:1px solid #E1E8F8;border-radius:21px;background:rgba(255,255,255,.91);box-shadow:0 10px 28px #233b7609;}}
 .registration-heading-icon{{display:flex;align-items:center;justify-content:center;flex:0 0 43px;width:43px;height:43px;border-radius:14px;background:linear-gradient(135deg,#EAF1FF,#F1EBFF);font-size:21px;}}
@@ -316,7 +316,7 @@ def show_loading_visual(message):
         st.info(message)
 
 def footer():
-    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>AI Animal Recognition · CNN & YOLO | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>Project UTS Praktikum Pemrograman Big data | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
 
 def go(step):
     st.session_state.step = step
@@ -338,7 +338,7 @@ main_icon_uri = bg_uri(MAIN_ICON_PATH)
 brand_mark = f'<img src="{main_icon_uri}" alt="PawScan icon">' if main_icon_uri else '🐾'
 st.markdown(f'<div class="brand"><div class="brand-icon">{brand_mark}</div><div><div class="brand-name">PawScan</div><div class="brand-sub">ANIMAL RECOGNITION · CNN + YOLO</div></div></div>', unsafe_allow_html=True)
 step = st.session_state.step
-labels = ["Intro", "Registrasi", "Metode", "Unggah & Analisis", "Hasil"]
+labels = ["Beranda", "Registrasi", "Metode", "Unggah & Analisis", "Hasil"]
 progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 6))
 st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
@@ -393,8 +393,8 @@ elif step == 2:
             mascot_markup = f'<div class="welcome-mascot-pair">{mascot_items}</div>' if mascot_items else ""
         st.markdown(
             '<div class="welcome-hero"><div class="welcome-copy">'
-            '<span class="hero-kicker">PAWSCAN MEMBER · 02/05</span>'
-            '<h1>Halo, selamat datang di PawScan!</h1>'
+            '<span class="hero-kicker">PAWSCAN MEMBER</span>'
+            '<h1>Halo, Sobat Paw!</h1>'
             '<p>Kenali sahabat berbulu dengan teknologi AI. Lengkapi profil singkatmu untuk melanjutkan ke tahap pemilihan metode.</p>'
             '</div>' + mascot_markup + '</div>',
             unsafe_allow_html=True,
