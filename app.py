@@ -94,6 +94,18 @@ h1,h2,h3,h4{{font-weight:700;}}
 .hero-kicker{{display:inline-block;border:1px solid #ffffff45;background:#ffffff15;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.8px;}}
 .hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}}
 .home-hero{{position:relative;isolation:isolate;overflow:hidden;min-height:300px;padding:34px;border-radius:24px;color:white;background:linear-gradient(120deg,#172554 0%,#2947C7 58%,#4263EB 100%);box-shadow:0 16px 40px #2947c729;}}
+/* Dekorasi acak khusus di dalam kotak hero Beranda */
+.home-hero:before{{content:"";position:absolute;z-index:0;width:260px;height:260px;left:36%;top:-155px;border:1px solid #ffffff1c;border-radius:50%;box-shadow:0 0 0 24px #ffffff06,0 0 0 52px #ffffff05;pointer-events:none;}}
+.home-hero:after{{content:"";position:absolute;z-index:0;width:190px;height:190px;left:57%;bottom:-135px;border:1px solid #ffffff1a;border-radius:50%;box-shadow:0 0 0 22px #ffffff07,0 0 0 46px #ffffff05;pointer-events:none;}}
+.home-paw-pattern{{position:absolute;z-index:0;inset:0;overflow:hidden;pointer-events:none;color:#fff;}}
+.home-paw-pattern span{{position:absolute;display:block;line-height:1;opacity:.12;filter:grayscale(1);user-select:none;}}
+.home-paw-pattern .paw-a{{left:35%;top:18%;font-size:34px;transform:rotate(-24deg);}}
+.home-paw-pattern .paw-b{{left:49%;top:64%;font-size:25px;transform:rotate(18deg);opacity:.09;}}
+.home-paw-pattern .paw-c{{left:67%;top:15%;font-size:42px;transform:rotate(15deg);opacity:.10;}}
+.home-paw-pattern .paw-d{{left:78%;top:67%;font-size:29px;transform:rotate(-18deg);opacity:.11;}}
+.home-paw-pattern .paw-e{{left:24%;top:72%;font-size:22px;transform:rotate(12deg);opacity:.08;}}
+.home-paw-pattern .spark-a{{left:43%;top:38%;font-size:22px;opacity:.18;}}
+.home-paw-pattern .spark-b{{left:72%;top:44%;font-size:17px;opacity:.15;}}
 .home-hero-copy{{position:relative;z-index:2;max-width:66%;}}
 .home-hero p{{max-width:690px;}}
 .home-hero-mascot{{position:absolute;z-index:1;right:18px;bottom:-12px;width:32%;height:95%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 10px #101c4b25);pointer-events:none;}}
@@ -111,8 +123,8 @@ div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b
 @keyframes pawscanArrow{{0%,100%{{transform:translateX(0)}}50%{{transform:translateX(4px)}}}}
 @media(hover:hover){{.stButton>button[kind="primary"]:hover{{transform:translateY(-2px);box-shadow:0 12px 25px #1991ff45;filter:saturate(1.08);}}.stButton>button[kind="primary"]:hover span{{animation:pawscanArrow .65s ease-in-out infinite;}}}}
 .stButton>button[kind="primary"]{{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;border-radius:999px!important;box-shadow:0 7px 20px #1991ff2b;}}
-@media(max-width:900px){{.home-hero{{min-height:285px;padding:28px;}}.home-hero-copy{{max-width:68%;}}.home-hero-mascot{{width:34%;right:8px;}}.step-card{{padding:17px;}}}}
-@media(max-width:600px){{.home-hero{{min-height:285px;padding:22px 18px;border-radius:20px;}}.home-hero-copy{{max-width:72%;}}.home-hero h1{{font-size:clamp(24px,6vw,32px);}}.home-hero p{{font-size:11px;line-height:1.6;max-width:100%;}}.home-hero-mascot{{width:42%;height:64%;right:-4px;bottom:-4px;opacity:.98;}}.step-card{{min-height:0;padding:16px;}}}}
+@media(max-width:900px){{.home-hero{{min-height:285px;padding:28px;}}.home-hero-copy{{max-width:68%;}}.home-hero-mascot{{width:34%;right:8px;}}.home-paw-pattern .paw-c{{left:65%;font-size:34px;}}.step-card{{padding:17px;}}}}
+@media(max-width:600px){{.home-hero{{min-height:285px;padding:22px 18px;border-radius:20px;}}.home-paw-pattern span{{opacity:.07!important;}}.home-paw-pattern .paw-c{{left:62%;font-size:28px;}}.home-paw-pattern .paw-d{{left:73%;top:57%;}}.home-hero-copy{{max-width:72%;}}.home-hero h1{{font-size:clamp(24px,6vw,32px);}}.home-hero p{{font-size:11px;line-height:1.6;max-width:100%;}}.home-hero-mascot{{width:42%;height:64%;right:-4px;bottom:-4px;opacity:.98;}}.step-card{{min-height:0;padding:16px;}}}}
 @media(prefers-reduced-motion:reduce){{.step-card,.stButton>button[kind="primary"]{{transition:none!important;}}.step-card:hover,.stButton>button[kind="primary"]:hover{{transform:none!important;}}}}
 .welcome-hero{{position:relative;isolation:isolate;min-height:232px;padding:23px 18px 20px;border-radius:17px;overflow:visible;background:linear-gradient(112deg,#172554 0%,#2446C7 55%,#3659E8 100%);box-shadow:0 12px 28px #2947c729;margin-bottom:12px;}}
 .welcome-hero .welcome-copy{{position:relative;z-index:3;width:52%;max-width:245px;}}
@@ -347,6 +359,12 @@ if step == 1:
     home_mascot = f'<img class="home-hero-mascot" src="{home_mascot_uri}" alt="Maskot kucing dan anjing PawScan">' if home_mascot_uri else ''
     st.markdown(f"""
     <div class="home-hero">
+      <div class="home-paw-pattern" aria-hidden="true">
+        <span class="paw-a">🐾</span><span class="paw-b">🐾</span>
+        <span class="paw-c">🐾</span><span class="paw-d">🐾</span>
+        <span class="paw-e">🐾</span><span class="spark-a">✦</span>
+        <span class="spark-b">✧</span>
+      </div>
       <div class="home-hero-copy">
         <span class="hero-kicker">SMART PET RECOGNITION</span>
         <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
