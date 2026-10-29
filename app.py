@@ -62,19 +62,13 @@ def bg_uri(path):
 
 desktop_bg = bg_uri(DESKTOP_BG_PATH)
 mobile_bg = bg_uri(MOBILE_BG_PATH)
-# Subtle paw-print SVG pattern layered over the background. It is embedded in CSS,
-# so no extra image asset is required and it scales cleanly on laptop and mobile.
-paw_pattern = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='220' viewBox='0 0 240 220'%3E%3Cg fill='%237C91D8' fill-opacity='.16'%3E%3Cellipse cx='52' cy='75' rx='13' ry='17' transform='rotate(-25 52 75)'/%3E%3Cellipse cx='77' cy='57' rx='12' ry='16' transform='rotate(-8 77 57)'/%3E%3Cellipse cx='101' cy='65' rx='12' ry='16' transform='rotate(15 101 65)'/%3E%3Cellipse cx='120' cy='87' rx='11' ry='15' transform='rotate(30 120 87)'/%3E%3Cpath d='M54 103 C40 111 32 132 43 143 C51 151 64 143 76 138 C88 134 101 145 112 140 C128 133 119 112 105 101 C91 90 69 93 54 103Z'/%3E%3C/g%3E%3C/svg%3E"
 if desktop_bg:
     bg_css = f"""background-color:#F5F8FF;background-image:linear-gradient(rgba(246,249,255,.48),rgba(246,249,255,.50)),url("{desktop_bg}");background-size:cover;background-position:center top;background-attachment:fixed;background-repeat:no-repeat;"""
 else:
-    bg_css = f"""background-color:#F5F8FF;background-image:radial-gradient(ellipse at 8% 8%,rgba(185,205,255,.35),transparent 34%),radial-gradient(ellipse at 94% 76%,rgba(221,204,255,.32),transparent 32%),linear-gradient(145deg,#F8FAFF,#EAF1FF,#F5F0FF),url("{paw_pattern}");background-size:auto,auto,auto,240px 220px;background-position:center,center,center,0 0;background-attachment:scroll;"""
-# Add a very subtle paw pattern over an existing custom background too.
-if desktop_bg:
-    bg_css = bg_css.replace('background-image:', f'background-image:url("{paw_pattern}"),', 1).replace('background-size:cover;', 'background-size:240px 220px,cover,cover;', 1).replace('background-position:center top;', 'background-position:0 0,center top,center top;', 1).replace('background-attachment:fixed;', 'background-attachment:scroll,fixed,fixed;', 1).replace('background-repeat:no-repeat;', 'background-repeat:repeat,no-repeat,no-repeat;', 1)
-mobile_rule = f'''@media(max-width:600px){{.stApp{{background-attachment:scroll!important;background-size:auto,auto,auto,190px 175px!important;background-position:center,center,center,0 0!important;}}}}'''
+    bg_css = "background:linear-gradient(145deg,#F8FAFF,#EAF1FF,#F5F0FF);"
+mobile_rule = ""
 if mobile_bg:
-    mobile_rule += f"""@media(max-width:600px){{.stApp{{background-image:url("{paw_pattern}"),linear-gradient(rgba(246,249,255,.48),rgba(246,249,255,.52)),url("{mobile_bg}")!important;background-size:190px 175px,cover,cover!important;background-position:0 0,center,center top!important;background-attachment:scroll!important;background-repeat:repeat,no-repeat,no-repeat!important;}}}}"""
+    mobile_rule = f"""@media(max-width:600px){{.stApp{{background-image:linear-gradient(rgba(246,249,255,.48),rgba(246,249,255,.52)),url("{mobile_bg}")!important;background-size:cover!important;background-position:center top!important;background-attachment:scroll!important;background-repeat:no-repeat!important;}}}}"""
 
 st.markdown(f"""
 <style>
