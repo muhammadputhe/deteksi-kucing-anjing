@@ -17,7 +17,14 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-YOLO_PATH = ROOT / "model" / "Haikal_Laporan 4.pt"
+# Prioritaskan best.pt jika tersedia; pertahankan dukungan model lama.
+YOLO_CANDIDATES = [
+    ROOT / "model" / "best.pt",
+    ROOT / "best.pt",
+    ROOT / "model" / "Haikal_Laporan 4.pt",
+]
+YOLO_PATH = next((p for p in YOLO_CANDIDATES if p.exists()), YOLO_CANDIDATES[0])
+YOLO_CONFIDENCE = 0.25
 CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
@@ -179,22 +186,52 @@ def classifier_predict(image, model):
     return [(labels[int(i)], float(pred[int(i)])) for i in order]
 
 def yolo_predict(image, model, confidence):
-    names = model.names
-    allowed = {"cats": "Kucing", "cat": "Kucing", "kucing": "Kucing", "dogs": "Anjing", "dog": "Anjing", "anjing": "Anjing"}
-    class_ids = [int(idx) for idx, name in names.items() if str(name).strip().lower() in allowed]
-    result = model.predict(image, imgsz=640, conf=confidence,
-                           classes=class_ids if class_ids else None, verbose=False)[0]
+    """Deteksi tanpa filter kelas awal agar prediksi model tidak tersembunyi."""
+    result = model.predict(
+        source=np.asarray(image.convert("RGB")),
+        imgsz=640,
+        conf=confidence,
+        verbose=False,
+    )[0]
+
+    # result.plot() dari Ultralytics menghasilkan array BGR; Streamlit perlu RGB.
     annotated = result.plot(line_width=3)[:, :, ::-1]
-    counts, best = {}, {}
+
+    allowed = {
+        "cat": "Kucing",
+        "cats": "Kucing",
+        "kucing": "Kucing",
+        "dog": "Anjing",
+        "dogs": "Anjing",
+        "anjing": "Anjing",
+    }
+    counts, best, raw_detections = {}, {}, []
+
     for box in result.boxes:
-        raw = str(result.names[int(box.cls)]).strip().lower()
-        label = allowed.get(raw)
+        class_id = int(box.cls[0].item())
+        score = float(box.conf[0].item())
+        raw_label = str(result.names[class_id]).strip().lower()
+        normalized = raw_label.replace("_", " ").replace("-", " ")
+        tokens = normalized.split()
+
+        label = allowed.get(normalized)
         if label is None:
-            continue
-        score = float(box.conf)
-        counts[label] = counts.get(label, 0) + 1
-        best[label] = max(best.get(label, 0.0), score)
-    return annotated, counts, best
+            if "cat" in tokens or "kucing" in tokens:
+                label = "Kucing"
+            elif "dog" in tokens or "anjing" in tokens:
+                label = "Anjing"
+
+        raw_detections.append({
+            "ID kelas": class_id,
+            "Label model": raw_label,
+            "Confidence": round(score, 4),
+        })
+
+        if label is not None:
+            counts[label] = counts.get(label, 0) + 1
+            best[label] = max(best.get(label, 0.0), score)
+
+    return annotated, counts, best, raw_detections, dict(result.names)
 
 def confidence_rows(items):
     rows = []
@@ -463,10 +500,7 @@ elif step == 4:
         mode_label = "Klasifikasi CNN" if mode == "Klasifikasi CNN" else "Deteksi Objek YOLO"
         mode_detail = "Memprediksi kelas kucing atau anjing dan menampilkan skor model." if mode == "Klasifikasi CNN" else "Menandai lokasi hewan, menampilkan confidence, dan menghitung objek."
         st.markdown(f'<div class="analysis-tip"><div class="analysis-tip-title">✨ Metode aktif · {escape(mode_label)}</div><div class="analysis-tip-copy">{escape(mode_detail)}<br><br>✓ Pastikan hewan terlihat jelas<br>✓ Gunakan pencahayaan yang cukup<br>✓ Hindari gambar yang terlalu buram</div></div>', unsafe_allow_html=True)
-        if mode == "Deteksi Objek YOLO":
-            yolo_conf = st.slider("Ambang keyakinan YOLO", 0.05, 0.95, 0.25, 0.05)
-        else:
-            yolo_conf = 0.25
+        yolo_conf = YOLO_CONFIDENCE
         st.write("")
         if st.button("Mulai Analisis", type="primary", use_container_width=True, disabled=(image is None), key="start_analysis_button"):
             try:
@@ -485,16 +519,16 @@ elif step == 4:
                         go(5)
                 else:
                     if not YOLO_PATH.exists():
-                        st.error(f"Model YOLO tidak ditemukan: {YOLO_PATH}. Letakkan file Haikal_Laporan 4.pt di folder model/.")
+                        st.error(f"Model YOLO tidak ditemukan. Letakkan best.pt di folder proyek atau model/, atau model lama di model/. Jalur yang dicoba: {YOLO_PATH}")
                     else:
                         loading_slot = st.empty()
                         with loading_slot.container():
                             show_loading_visual("PawScan sedang memindai objek dengan YOLO. Mohon tunggu...")
                         with st.spinner("YOLO sedang mendeteksi objek..."):
                             model = load_yolo(str(YOLO_PATH))
-                            annotated, counts, best = yolo_predict(image, model, yolo_conf)
+                            annotated, counts, best, raw_detections, model_names = yolo_predict(image, model, yolo_conf)
                         loading_slot.empty()
-                        st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "image": image.copy()}
+                        st.session_state.analysis_result = {"mode": mode, "annotated": annotated, "counts": counts, "best": best, "raw_detections": raw_detections, "model_names": model_names, "yolo_confidence": yolo_conf, "image": image.copy()}
                         go(5)
             except ImportError as exc:
                 st.error("Dependensi model belum terpasang. CNN memerlukan TensorFlow; YOLO memerlukan ultralytics.")
@@ -555,8 +589,27 @@ elif step == 5:
                     st.markdown(confidence_rows(ranked), unsafe_allow_html=True)
                     summary = f"YOLO mendeteksi {total} objek. Rinciannya: {counts.get('Anjing', 0)} anjing dan {counts.get('Kucing', 0)} kucing. Nilai confidence tertinggi per kelas ditampilkan di atas."
                 else:
-                    st.warning("Tidak ada anjing atau kucing yang terdeteksi pada ambang keyakinan ini. Coba gambar lain atau turunkan ambang keyakinan pada sesi analisis.")
-                    summary = "YOLO belum menemukan objek anjing atau kucing pada gambar dengan ambang keyakinan yang digunakan."
+                    st.warning(
+                        "Tidak ada kelas kucing/anjing yang cocok dengan label yang dikenali. "
+                        "Detail prediksi mentah model ditampilkan di bawah."
+                    )
+                    st.caption(
+                        f"Confidence tetap: {result.get('yolo_confidence', YOLO_CONFIDENCE):.2f}"
+                    )
+                    st.write("Nama kelas model:", result.get("model_names", {}))
+                    raw_detections = result.get("raw_detections", [])
+                    if raw_detections:
+                        st.write("Prediksi mentah YOLO:")
+                        st.dataframe(raw_detections, use_container_width=True)
+                    else:
+                        st.info(
+                            "YOLO tidak menghasilkan bounding box pada confidence 0.25. "
+                            "Untuk diagnosis sementara, ubah YOLO_CONFIDENCE menjadi 0.01."
+                        )
+                    summary = (
+                        "Belum ada deteksi kucing/anjing yang dapat dipetakan dari hasil model. "
+                        "Periksa nama kelas model dan prediksi mentah di atas."
+                    )
         st.write("")
         st.markdown('<div class="panel"><div class="panel-title">🧾 Ringkasan Hasil</div><div class="panel-subtitle">', unsafe_allow_html=True)
         st.write(summary)
