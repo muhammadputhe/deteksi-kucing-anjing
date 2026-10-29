@@ -94,7 +94,7 @@ h1,h2,h3,h4{{font-weight:700;}}
 .welcome-hero .hero-kicker{{font-size:8px;padding:4px 8px;letter-spacing:.4px;color:#fff;border-color:#ffffff60;background:#ffffff16;}}
 .welcome-hero h1{{color:#fff!important;font-size:clamp(25px,2.5vw,32px);line-height:1.08;letter-spacing:-.55px;font-weight:800;margin:13px 0 10px;max-width:225px;text-shadow:0 1px 1px #101c4b12;}}
 .welcome-hero p{{font-size:10px;line-height:1.5;max-width:215px;margin:0;color:#F0F4FF;}}
-.welcome-mascot-combined{{position:absolute;z-index:2;right:-37px;bottom:-15px;width:86%;height:116%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
+.welcome-mascot-combined{{position:absolute;z-index:2;right:-87px;bottom:-15px;width:86%;height:116%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
 .welcome-mascot-pair{{position:absolute;z-index:2;right:-22px;bottom:-13px;width:59%;height:110%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
 .welcome-mascot-pair img{{width:58%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 3px #101c4b22);}}
 .welcome-hero .hero-decoration{{display:none;}}
