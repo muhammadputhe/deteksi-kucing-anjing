@@ -31,9 +31,10 @@ MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
 CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
 DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
 MASCOT_PATH = ASSET_DIR / "maskot_pawscan.png"  # Opsional: maskot kucing + anjing dalam satu PNG transparan
-STEP_REGISTRATION_ICON_PATH = ASSET_DIR / "icon_registrasi.png"
-STEP_AI_ICON_PATH = ASSET_DIR / "icon_metode_ai.png"
-STEP_UPLOAD_ICON_PATH = ASSET_DIR / "icon_upload_hasil.png"
+STEP_CARD_1_PATH = ASSET_DIR / "kartu_01_registrasi.png"
+STEP_CARD_2_PATH = ASSET_DIR / "kartu_02_pilih_metode.png"
+STEP_CARD_3_PATH = ASSET_DIR / "kartu_03_unggah_hasil.png"
+PAW_PRINT_PATH = ASSET_DIR / "paw_print_blue.png"
 EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.jpg"
 LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
 HOME_ICON_PATH = ASSET_DIR / "beranda.png"
@@ -97,8 +98,15 @@ h1,h2,h3,h4{{font-weight:700;}}
 .home-hero p{{max-width:690px;}}
 .home-hero-mascot{{position:absolute;z-index:1;right:18px;bottom:-12px;width:32%;height:95%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 10px #101c4b25);pointer-events:none;}}
 .step-card{{height:100%;min-height:145px;padding:20px;border:1px solid #E3E9F5;border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}}
+div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease;}}@media(hover:hover){{div[data-testid='stImage'] img:hover{{transform:translateY(-3px);box-shadow:0 15px 30px #2947c71a;}}}}.step-card-image{{display:block;width:100%;height:auto;border-radius:20px;box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease;}}
+.step-card-image:hover{{transform:translateY(-3px);box-shadow:0 15px 30px #2947c71a;}}
+.paw-decor{{position:fixed;z-index:0;width:54px;height:54px;object-fit:contain;opacity:.12;pointer-events:none;filter:saturate(1.05);}}
+.paw-decor.paw-one{{left:12px;top:34%;transform:rotate(-18deg);}}
+.paw-decor.paw-two{{right:18px;top:15%;width:42px;height:42px;transform:rotate(16deg);}}
+.paw-decor.paw-three{{right:8px;bottom:10%;width:62px;height:62px;transform:rotate(-12deg);}}
+
 .step-card:hover{{transform:translateY(-5px);box-shadow:0 15px 30px #2947c71a;border-color:#C8D5FF;}}
-.step-icon{{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,#EAF0FF,#F3EDFF);margin:0 0 12px;overflow:hidden;}}.step-icon img{{width:100%;height:100%;object-fit:contain;padding:5px;}}
+.step-icon{{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,#EAF0FF,#F3EDFF);font-size:22px;margin:0 0 12px;}}
 .step-card .pill{{display:inline-block;}}
 @keyframes pawscanArrow{{0%,100%{{transform:translateX(0)}}50%{{transform:translateX(4px)}}}}
 @media(hover:hover){{.stButton>button[kind="primary"]:hover{{transform:translateY(-2px);box-shadow:0 12px 25px #1991ff45;filter:saturate(1.08);}}.stButton>button[kind="primary"]:hover span{{animation:pawscanArrow .65s ease-in-out infinite;}}}}
@@ -111,7 +119,7 @@ h1,h2,h3,h4{{font-weight:700;}}
 .welcome-hero .hero-kicker{{font-size:8px;padding:4px 8px;letter-spacing:.4px;color:#fff;border-color:#ffffff60;background:#ffffff16;}}
 .welcome-hero h1{{color:#fff!important;font-size:clamp(23px,2.25vw,30px);line-height:1.08;letter-spacing:-.55px;font-weight:800;margin:13px 0 10px;max-width:225px;text-shadow:0 1px 1px #101c4b12;}}
 .welcome-hero p{{font-size:10px;line-height:1.5;max-width:215px;margin:0;color:#F0F4FF;}}
-.welcome-mascot-combined{{position:absolute;z-index:2;right:-87px;bottom:-20px;width:76%;height:108%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
+.welcome-mascot-combined{{position:absolute;z-index:2;right:-20px;bottom:-15px;width:60%;height:108%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
 .welcome-mascot-pair{{position:absolute;z-index:2;right:-15px;bottom:-13px;width:53%;height:103%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
 .welcome-mascot-pair img{{width:55%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 3px #101c4b22);}}
 .welcome-hero .hero-decoration{{display:none;}}
@@ -328,16 +336,23 @@ if step == 1:
       {home_mascot}
     </div>""", unsafe_allow_html=True)
     st.write("")
-    step_icons = [
-        ("01", bg_uri(STEP_REGISTRATION_ICON_PATH), "Isi registrasi", "Masukkan nama dan kampus."),
-        ("02", bg_uri(STEP_AI_ICON_PATH), "Pilih metode", "Tentukan CNN atau deteksi YOLO."),
-        ("03", bg_uri(STEP_UPLOAD_ICON_PATH), "Unggah & lihat hasil", "Unggah foto dan baca ringkasan AI."),
-    ]
+    # Kartu langkah menggunakan gambar PNG siap pakai; tidak perlu membangun ulang desain dengan HTML/CSS.
+    paw_uri = bg_uri(PAW_PRINT_PATH)
+    if paw_uri:
+        st.markdown(
+            f'<img class="paw-decor paw-one" src="{paw_uri}" alt="" aria-hidden="true">'
+            f'<img class="paw-decor paw-two" src="{paw_uri}" alt="" aria-hidden="true">'
+            f'<img class="paw-decor paw-three" src="{paw_uri}" alt="" aria-hidden="true">',
+            unsafe_allow_html=True,
+        )
+    card_paths = [STEP_CARD_1_PATH, STEP_CARD_2_PATH, STEP_CARD_3_PATH]
     c1, c2, c3 = st.columns(3, gap="medium")
-    for col, (num, icon_uri, title, desc) in zip((c1, c2, c3), step_icons):
+    for col, card_path in zip((c1, c2, c3), card_paths):
         with col:
-            icon_markup = f'<img src="{icon_uri}" alt="" aria-hidden="true">' if icon_uri else '<span aria-hidden="true">🐾</span>'
-            st.markdown(f'<div class="step-card"><div class="step-icon">{icon_markup}</div><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
+            if card_path.exists():
+                st.image(str(card_path), use_container_width=True)
+            else:
+                st.warning(f"Aset kartu tidak ditemukan: {card_path.name}")
     st.write("")
     if st.button("Mulai Sekarang →", type="primary", use_container_width=True):
         go(2)
