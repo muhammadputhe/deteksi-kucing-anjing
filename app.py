@@ -24,17 +24,13 @@ YOLO_CANDIDATES = [
     ROOT / "model" / "Haikal_Laporan 4.pt",
 ]
 YOLO_PATH = next((p for p in YOLO_CANDIDATES if p.exists()), YOLO_CANDIDATES[0])
-YOLO_CONFIDENCE = 0.40
+YOLO_CONFIDENCE = 0.20
 CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
 CAT_ICON_PATH = ASSET_DIR / "cat_icon.png"
 DOG_ICON_PATH = ASSET_DIR / "dog_icon.png"
 MASCOT_PATH = ASSET_DIR / "maskot_pawscan.png"  # Opsional: maskot kucing + anjing dalam satu PNG transparan
-STEP_CARD_1_PATH = ASSET_DIR / "kartu_01_registrasi.png"
-STEP_CARD_2_PATH = ASSET_DIR / "kartu_02_pilih_metode.png"
-STEP_CARD_3_PATH = ASSET_DIR / "kartu_03_unggah_hasil.png"
-PAW_PRINT_PATH = ASSET_DIR / "paw_print_blue.png"
 EMPTY_STATE_PATH = ASSET_DIR / "Ilustrasi_kosong.jpg"
 LOADING_GIF_PATH = ASSET_DIR / "pawscan_loading.gif"
 HOME_ICON_PATH = ASSET_DIR / "beranda.png"
@@ -87,45 +83,34 @@ h1,h2,h3,h4{{font-weight:700;}}
 .progress-wrap{{display:flex;gap:8px;margin:12px 0 24px;}}
 .progress-step{{flex:1;border-radius:99px;height:6px;background:#DDE5F7;}}
 .progress-step.active{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
+.progress-caption-wrap{{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:-16px 0 22px;}}
+.progress-caption{{font-size:10px;color:#9AA5BC;font-weight:700;line-height:1.35;}}
+.progress-caption.active{{color:#3655D8;}}
 .step-label{{font-size:11px;color:#64708B;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px;}}
 .hero{{position:relative;overflow:hidden;padding:34px;border-radius:24px;color:white;background:linear-gradient(120deg,#172554 0%,#2947C7 58%,#4263EB 100%);box-shadow:0 16px 40px #2947c729;}}
 .hero h1{{color:white;font-size:clamp(28px,4vw,46px);line-height:1.15;font-weight:800;letter-spacing:-1px;margin:12px 0;}}
 .hero p{{color:#E0E8FF;font-size:14px;line-height:1.85;max-width:700px;}}
 .hero-kicker{{display:inline-block;border:1px solid #ffffff45;background:#ffffff15;border-radius:99px;padding:6px 11px;font-size:10px;font-weight:800;letter-spacing:.8px;}}
 .hero-decoration{{position:absolute;right:28px;top:20px;font-size:78px;opacity:.18;pointer-events:none;}}
-.home-hero{{position:relative;isolation:isolate;overflow:hidden;min-height:300px;padding:34px;border-radius:24px;color:white;background:linear-gradient(120deg,#172554 0%,#2947C7 58%,#4263EB 100%);box-shadow:0 16px 40px #2947c729;}}
-.home-hero-copy{{position:relative;z-index:2;max-width:66%;}}
-.home-hero p{{max-width:690px;}}
-.home-hero-mascot{{position:absolute;z-index:1;right:18px;bottom:-12px;width:32%;height:95%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 10px #101c4b25);pointer-events:none;}}
-.step-card{{height:100%;min-height:145px;padding:20px;border:1px solid #E3E9F5;border-radius:20px;background:rgba(255,255,255,.96);box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}}
-div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease;}}@media(hover:hover){{div[data-testid='stImage'] img:hover{{transform:translateY(-3px);box-shadow:0 15px 30px #2947c71a;}}}}.step-card-image{{display:block;width:100%;height:auto;border-radius:20px;box-shadow:0 8px 26px #18274b0a;transition:transform .22s ease,box-shadow .22s ease;}}
-.step-card-image:hover{{transform:translateY(-3px);box-shadow:0 15px 30px #2947c71a;}}
-.paw-decor{{position:fixed;z-index:0;width:54px;height:54px;object-fit:contain;opacity:.12;pointer-events:none;filter:saturate(1.05);}}
-.paw-decor.paw-one{{left:12px;top:34%;transform:rotate(-18deg);}}
-.paw-decor.paw-two{{right:18px;top:15%;width:42px;height:42px;transform:rotate(16deg);}}
-.paw-decor.paw-three{{right:8px;bottom:10%;width:62px;height:62px;transform:rotate(-12deg);}}
-
-.step-card:hover{{transform:translateY(-5px);box-shadow:0 15px 30px #2947c71a;border-color:#C8D5FF;}}
-.step-icon{{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:linear-gradient(135deg,#EAF0FF,#F3EDFF);font-size:22px;margin:0 0 12px;}}
-.step-card .pill{{display:inline-block;}}
-@keyframes pawscanArrow{{0%,100%{{transform:translateX(0)}}50%{{transform:translateX(4px)}}}}
-@media(hover:hover){{.stButton>button[kind="primary"]:hover{{transform:translateY(-2px);box-shadow:0 12px 25px #1991ff45;filter:saturate(1.08);}}.stButton>button[kind="primary"]:hover span{{animation:pawscanArrow .65s ease-in-out infinite;}}}}
-.stButton>button[kind="primary"]{{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;border-radius:999px!important;box-shadow:0 7px 20px #1991ff2b;}}
-@media(max-width:900px){{.home-hero{{min-height:285px;padding:28px;}}.home-hero-copy{{max-width:68%;}}.home-hero-mascot{{width:34%;right:8px;}}.step-card{{padding:17px;}}}}
-@media(max-width:600px){{.home-hero{{min-height:285px;padding:22px 18px;border-radius:20px;}}.home-hero-copy{{max-width:72%;}}.home-hero h1{{font-size:clamp(24px,6vw,32px);}}.home-hero p{{font-size:11px;line-height:1.6;max-width:100%;}}.home-hero-mascot{{width:42%;height:64%;right:-4px;bottom:-4px;opacity:.98;}}.step-card{{min-height:0;padding:16px;}}}}
-@media(prefers-reduced-motion:reduce){{.step-card,.stButton>button[kind="primary"]{{transition:none!important;}}.step-card:hover,.stButton>button[kind="primary"]:hover{{transform:none!important;}}}}
 .welcome-hero{{position:relative;isolation:isolate;min-height:232px;padding:23px 18px 20px;border-radius:17px;overflow:visible;background:linear-gradient(112deg,#172554 0%,#2446C7 55%,#3659E8 100%);box-shadow:0 12px 28px #2947c729;margin-bottom:12px;}}
 .welcome-hero .welcome-copy{{position:relative;z-index:3;width:52%;max-width:245px;}}
 .welcome-hero .hero-kicker{{font-size:8px;padding:4px 8px;letter-spacing:.4px;color:#fff;border-color:#ffffff60;background:#ffffff16;}}
 .welcome-hero h1{{color:#fff!important;font-size:clamp(23px,2.25vw,30px);line-height:1.08;letter-spacing:-.55px;font-weight:800;margin:13px 0 10px;max-width:225px;text-shadow:0 1px 1px #101c4b12;}}
 .welcome-hero p{{font-size:10px;line-height:1.5;max-width:215px;margin:0;color:#F0F4FF;}}
-.welcome-mascot-combined{{position:absolute;z-index:2;right:-70px;bottom:-20px;width:80%;height:108%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
+.welcome-mascot-combined{{position:absolute;z-index:2;right:-20px;bottom:-15px;width:60%;height:108%;object-fit:contain;object-position:center bottom;pointer-events:none;filter:drop-shadow(0 5px 5px #101c4b20);}}
 .welcome-mascot-pair{{position:absolute;z-index:2;right:-15px;bottom:-13px;width:53%;height:103%;display:flex;align-items:flex-end;justify-content:center;gap:0;pointer-events:none;}}
 .welcome-mascot-pair img{{width:55%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 3px #101c4b22);}}
 .welcome-hero .hero-decoration{{display:none;}}
 @media(max-width:900px){{.welcome-hero{{min-height:232px;padding:20px 16px;}}.welcome-hero .welcome-copy{{width:52%;max-width:235px;}}.welcome-hero h1{{font-size:24px;max-width:220px;}}.welcome-hero p{{max-width:205px;font-size:9.5px;}}.welcome-mascot-combined{{width:60%;height:105%;right:-15px;bottom:-12px;}}.welcome-mascot-pair{{width:53%;height:100%;right:-10px;bottom:-10px;}}}}
 @media(max-width:600px){{.welcome-hero{{min-height:225px;padding:17px 13px;border-radius:14px;margin-bottom:18px;}}.welcome-hero .welcome-copy{{width:53%;max-width:210px;}}.welcome-hero h1{{font-size:21px;line-height:1.08;margin:11px 0 8px;max-width:195px;}}.welcome-hero p{{font-size:8.5px;line-height:1.45;max-width:180px;}}.welcome-mascot-combined{{width:59%;height:94%;right:-12px;bottom:-10px;}}.welcome-mascot-pair{{width:52%;height:88%;right:-8px;bottom:-8px;}}}} .feature-icon{{width:44px;height:44px;object-fit:contain;margin:5px 0 8px;}} .asset-action{{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:7px;}} .result-pet-icon{{width:112px;height:112px;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 8px 12px #2947c71a);}} .section-eyebrow{{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#6478B8;text-transform:uppercase;margin-bottom:7px;}} .soft-note{{border-radius:14px;background:linear-gradient(120deg,#F0F5FF,#FAF7FF);padding:14px 16px;border:1px solid #E2E9FF;color:#596783;font-size:12px;line-height:1.8;}} .stRadio label{{font-weight:700;}} .stProgress>div>div>div>div{{background:linear-gradient(90deg,#4263EB,#8B5CF6);}}
 .panel{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:20px;padding:22px;box-shadow:0 8px 26px #18274b0a;}}
+[data-testid="stVerticalBlockBorderWrapper"]{{border:1px solid #DFE7F5!important;border-radius:22px!important;background:rgba(255,255,255,.88)!important;box-shadow:0 12px 32px #18274b0b!important;padding:20px 22px!important;}}
+[data-testid="stVerticalBlockBorderWrapper"] [data-testid="stWidgetLabel"] label{{font-size:13px!important;font-weight:700!important;color:#344568!important;}}
+[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="input"]{{border-radius:12px!important;}}
+[data-testid="stVerticalBlockBorderWrapper"] div[data-baseweb="input"] input{{border-radius:12px!important;padding:12px 13px!important;}}
+.registration-heading{{font-family:"Poppins",sans-serif;font-size:21px;font-weight:800;color:#172554;letter-spacing:-.4px;margin-bottom:4px;}}
+.registration-subtitle{{font-size:12px;color:#71809B;line-height:1.7;margin-bottom:12px;}}
+.registration-note{{display:flex;align-items:center;gap:8px;border:1px solid #DCE7FF;background:linear-gradient(110deg,#F1F6FF,#FBF9FF);padding:10px 12px;border-radius:12px;color:#617193;font-size:11px;line-height:1.55;margin-top:4px;}}
 .panel-title{{font-size:18px;font-weight:800;color:#172554;margin-bottom:6px;}}
 .panel-subtitle{{font-size:12px;color:#758096;line-height:1.75;}}
 .metric-card{{background:rgba(255,255,255,.94);border:1px solid #E3E9F5;border-radius:17px;padding:18px;min-height:100px;}}
@@ -149,7 +134,7 @@ div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b
 .conf-fill{{height:100%;background:linear-gradient(90deg,#4263EB,#8B5CF6);border-radius:99px;}}
 .conf-pct{{width:55px;text-align:right;color:#344054;font-size:12px;font-weight:800;}}
 .empty-state{{text-align:center;padding:26px 15px;border:1px dashed #CFD8EB;border-radius:16px;background:#ffffffc9;color:#667085;line-height:1.8;}}
-.footer{{text-align:center;color:#2D4FD7;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
+.footer{{text-align:center;color:#8A65B5;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
 .stButton button,.stDownloadButton button{{border-radius:12px;font-weight:800;min-height:44px;border:0;}}
 .analysis-heading{{display:flex;align-items:center;gap:14px;padding:22px 24px;border-radius:22px;background:linear-gradient(115deg,#172554 0%,#2947C7 58%,#536DFF 100%);box-shadow:0 14px 32px #2947c726;color:#fff;margin-bottom:16px;}}
 .analysis-heading .analysis-heading-icon{{width:64px;height:64px;object-fit:contain;flex:0 0 64px;filter:drop-shadow(0 5px 10px #091a5a55);}}
@@ -181,7 +166,7 @@ div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b
 [data-testid="stImage"] img{{border-radius:15px;}}
 div[data-baseweb="input"] input{{border-radius:10px;}}
 @media(max-width:900px){{.block-container{{padding:1rem 1rem 2rem;}}.hero{{padding:25px;}}.panel{{padding:17px;}}}}
-@media(max-width:600px){{.block-container{{padding:.7rem .7rem 1.5rem;}}.hero{{padding:21px 17px;border-radius:17px;}}.hero h1{{font-size:28px;}}.hero p{{font-size:13px;}}.hero-decoration{{font-size:45px;right:8px;top:8px;}}.panel{{padding:14px;}}.footer{{line-height:1.8;}}}}
+@media(max-width:600px){{.progress-caption-wrap{{gap:4px;margin-top:-17px;margin-bottom:18px;}}.progress-caption{{font-size:8px;letter-spacing:-.1px;}}[data-testid="stVerticalBlockBorderWrapper"]{{padding:15px 14px!important;border-radius:18px!important;}}.registration-heading{{font-size:19px;}}.block-container{{padding:.7rem .7rem 1.5rem;}}.hero{{padding:21px 17px;border-radius:17px;}}.hero h1{{font-size:28px;}}.hero p{{font-size:13px;}}.hero-decoration{{font-size:45px;right:8px;top:8px;}}.panel{{padding:14px;}}.footer{{line-height:1.8;}}}}
 {mobile_rule}
 </style>
 """, unsafe_allow_html=True)
@@ -297,7 +282,7 @@ def show_loading_visual(message):
         st.info(message)
 
 def footer():
-    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>Project UTS Pemrograman Praktikum Big Data | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
+    st.markdown('<div class="footer">created by <b>Muhammad Haikal Asy’ary · 2408108010065</b><br>AI Animal Recognition · CNN & YOLO | Universitas Syiah Kuala</div>', unsafe_allow_html=True)
 
 def go(step):
     st.session_state.step = step
@@ -321,38 +306,25 @@ st.markdown(f'<div class="brand"><div class="brand-icon">{brand_mark}</div><div>
 step = st.session_state.step
 labels = ["Intro", "Registrasi", "Metode", "Unggah & Analisis", "Hasil"]
 progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 6))
-st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
+progress_captions = "".join(f'<div class="progress-caption {"active" if i == step else ""}">{label}</div>' for i, label in enumerate(labels, start=1))
+st.markdown(f'<div class="progress-wrap">{progress}</div><div class="progress-caption-wrap">{progress_captions}</div><div class="step-label">SESI {step} DARI 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
 if step == 1:
-    home_mascot_uri = bg_uri(MASCOT_PATH)
-    home_mascot = f'<img class="home-hero-mascot" src="{home_mascot_uri}" alt="Maskot kucing dan anjing PawScan">' if home_mascot_uri else ''
-    st.markdown(f"""
-    <div class="home-hero">
-      <div class="home-hero-copy">
-        <span class="hero-kicker">SMART PET RECOGNITION</span>
-        <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
-        <p>Selamat datang di PawScan! Pilih metode klasifikasi CNN untuk mengenali jenis hewan, atau deteksi objek menggunakan YOLO untuk menemukan dan menandai hewan dalam gambar. Ikuti lima sesi sederhana untuk melihat hasilnya.</p>
-      </div>
-      {home_mascot}
+    st.markdown("""
+    <div class="hero">
+    <span class="hero-kicker">SMART PET RECOGNITION</span>
+    <h1>Kenali Anjing & Kucing<br>dengan <span style="color:#AFC2FF">Kekuatan AI</span></h1>
+    <p>Selamat datang di PawScan! Pilih metode klasifikasi CNN untuk mengenali jenis hewan, atau deteksi objek menggunakan YOLO untuk menemukan dan menandai hewan dalam gambar. Ikuti lima sesi sederhana untuk melihat hasilnya.</p>
     </div>""", unsafe_allow_html=True)
     st.write("")
-    # Kartu langkah menggunakan gambar PNG siap pakai; tidak perlu membangun ulang desain dengan HTML/CSS.
-    paw_uri = bg_uri(PAW_PRINT_PATH)
-    if paw_uri:
-        st.markdown(
-            f'<img class="paw-decor paw-one" src="{paw_uri}" alt="" aria-hidden="true">'
-            f'<img class="paw-decor paw-two" src="{paw_uri}" alt="" aria-hidden="true">'
-            f'<img class="paw-decor paw-three" src="{paw_uri}" alt="" aria-hidden="true">',
-            unsafe_allow_html=True,
-        )
-    card_paths = [STEP_CARD_1_PATH, STEP_CARD_2_PATH, STEP_CARD_3_PATH]
     c1, c2, c3 = st.columns(3, gap="medium")
-    for col, card_path in zip((c1, c2, c3), card_paths):
+    for col, num, title, desc in [
+        (c1, "01", "Isi registrasi", "Masukkan nama dan kampus."),
+        (c2, "02", "Pilih metode", "Tentukan CNN atau deteksi YOLO."),
+        (c3, "03", "Unggah & lihat hasil", "Unggah foto dan baca ringkasan AI."),
+    ]:
         with col:
-            if card_path.exists():
-                st.image(str(card_path), use_container_width=True)
-            else:
-                st.warning(f"Aset kartu tidak ditemukan: {card_path.name}")
+            st.markdown(f'<div class="panel"><div class="pill">LANGKAH {num}</div><div class="panel-title" style="margin-top:13px">{title}</div><div class="panel-subtitle">{desc}</div></div>', unsafe_allow_html=True)
     st.write("")
     if st.button("Mulai Sekarang →", type="primary", use_container_width=True):
         go(2)
@@ -374,17 +346,18 @@ elif step == 2:
             mascot_markup = f'<div class="welcome-mascot-pair">{mascot_items}</div>' if mascot_items else ""
         st.markdown(
             '<div class="welcome-hero"><div class="welcome-copy">'
-            '<span class="hero-kicker">PAWSCAN MEMBER</span>'
-            '<h1>Halo, Selamat<br>Bergabung di<br>PawScan!</h1>'
-            '<p>Hanya satu langkah lagi untuk memulai petualangan analisis jejak kaki kesayanganmu!</p>'
+            '<span class="hero-kicker">✦ AI PET DETECTION</span>'
+            '<h1>Halo, Sobat Paw!<br>🐾</h1>'
+            '<p>Kenali sahabat berbulu dengan bantuan AI. Isi data singkatmu dan mulai petualangan PawScan!</p>'
             '</div>' + mascot_markup + '</div>',
             unsafe_allow_html=True,
         )
     with right:
-        st.markdown('<div class="panel"><div class="panel-title">📝 Registrasi Singkat</div><div class="panel-subtitle">Isi data berikut untuk melanjutkan ke sesi analisis.</div>', unsafe_allow_html=True)
-        full_name = st.text_input("Nama lengkap", value=st.session_state.full_name, placeholder="Masukkan nama lengkap")
-        campus = st.text_input("Nama kampus", value=st.session_state.campus, placeholder="Masukkan nama kampus")
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown('<div class="registration-heading">Kenalan dulu, yuk! 👋</div><div class="registration-subtitle">Isi identitasmu untuk memulai petualangan bersama PawScan.</div>', unsafe_allow_html=True)
+            full_name = st.text_input("Nama lengkap", value=st.session_state.full_name, placeholder="Masukkan nama lengkap", key="registration_full_name")
+            campus = st.text_input("Nama kampus", value=st.session_state.campus, placeholder="Contoh: Universitas Syiah Kuala", key="registration_campus")
+            st.markdown('<div class="registration-note"><span style="font-size:17px">🔒</span><span>Data ini digunakan untuk menampilkan identitasmu pada hasil analisis PawScan.</span></div>', unsafe_allow_html=True)
         st.write("")
         a, b = st.columns(2)
         with a:
