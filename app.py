@@ -24,7 +24,7 @@ YOLO_CANDIDATES = [
     ROOT / "model" / "Haikal_Laporan 4.pt",
 ]
 YOLO_PATH = next((p for p in YOLO_CANDIDATES if p.exists()), YOLO_CANDIDATES[0])
-YOLO_CONFIDENCE = 0.40
+YOLO_CONFIDENCE = 0.20
 CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
