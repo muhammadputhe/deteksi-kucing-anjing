@@ -149,7 +149,7 @@ div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b
 .conf-fill{{height:100%;background:linear-gradient(90deg,#4263EB,#8B5CF6);border-radius:99px;}}
 .conf-pct{{width:55px;text-align:right;color:#344054;font-size:12px;font-weight:800;}}
 .empty-state{{text-align:center;padding:26px 15px;border:1px dashed #CFD8EB;border-radius:16px;background:#ffffffc9;color:#667085;line-height:1.8;}}
-.footer{{text-align:center;color:#8A65B5;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
+.footer{{text-align:center;color:#2D4FD7;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
 .stButton button,.stDownloadButton button{{border-radius:12px;font-weight:800;min-height:44px;border:0;}}
 .analysis-heading{{display:flex;align-items:center;gap:14px;padding:22px 24px;border-radius:22px;background:linear-gradient(115deg,#172554 0%,#2947C7 58%,#536DFF 100%);box-shadow:0 14px 32px #2947c726;color:#fff;margin-bottom:16px;}}
 .analysis-heading .analysis-heading-icon{{width:64px;height:64px;object-fit:contain;flex:0 0 64px;filter:drop-shadow(0 5px 10px #091a5a55);}}
