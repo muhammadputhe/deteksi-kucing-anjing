@@ -150,25 +150,38 @@ div[data-testid='stImage'] img{{border-radius:20px;box-shadow:0 8px 26px #18274b
 .conf-pct{{width:55px;text-align:right;color:#344054;font-size:12px;font-weight:800;}}
 .empty-state{{text-align:center;padding:26px 15px;border:1px dashed #CFD8EB;border-radius:16px;background:#ffffffc9;color:#667085;line-height:1.8;}}
 .footer{{text-align:center;color:#8A65B5;font-size:11px;line-height:1.8;padding:24px 0 4px;}}
-/* Registration refresh: clearer hierarchy, calmer surfaces, and responsive layout. */
-.registration-heading{{display:flex;align-items:flex-start;gap:13px;padding:22px 23px;margin-bottom:18px;border:1px solid #E1E8F8;border-radius:21px;background:rgba(255,255,255,.91);box-shadow:0 10px 28px #233b7609;}}
-.registration-heading-icon{{display:flex;align-items:center;justify-content:center;flex:0 0 43px;width:43px;height:43px;border-radius:14px;background:linear-gradient(135deg,#EAF1FF,#F1EBFF);font-size:21px;}}
-.registration-heading-title{{font-family:'Poppins',sans-serif;font-size:21px;font-weight:800;line-height:1.3;color:#172554;margin:0 0 5px;}}
-.registration-heading-copy{{font-size:12px;line-height:1.75;color:#71809F;margin:0;}}
-.registration-form-card{{padding:22px 23px 20px;border:1px solid #E2E9F7;border-radius:21px;background:rgba(255,255,255,.91);box-shadow:0 12px 32px #243b760a;}}
-.registration-form-card [data-testid="stTextInput"]{{margin-top:2px;margin-bottom:13px;}}
-.registration-form-card [data-testid="stTextInput"] label{{font-size:12px;font-weight:700;color:#34446A;margin-bottom:7px;}}
-.registration-form-card div[data-baseweb="input"]{{background:#F8FAFF;border:1px solid #E1E8F6;border-radius:12px;transition:border-color .18s ease,box-shadow .18s ease;}}
-.registration-form-card div[data-baseweb="input"]:focus-within{{border-color:#7188F7;box-shadow:0 0 0 3px #4263EB16;}}
-.registration-form-card div[data-baseweb="input"] input{{background:transparent!important;min-height:43px;color:#172033;}}
-.registration-helper{{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;margin-top:3px;border-radius:12px;background:linear-gradient(110deg,#F1F6FF,#FAF7FF);border:1px solid #E5EBFC;color:#6A7895;font-size:11px;line-height:1.7;}}
-.registration-helper-icon{{font-size:15px;line-height:1.4;}}
-.registration-benefit{{display:flex;gap:8px;align-items:center;margin-top:13px;color:#72809B;font-size:10px;line-height:1.6;}}
-.registration-benefit span{{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:7px;background:#E8F8F0;color:#159565;font-size:12px;flex:0 0 20px;}}
-.welcome-hero{{box-shadow:0 18px 42px #2947c72b;}}
-.welcome-hero:before{{content:"";position:absolute;width:190px;height:190px;right:-60px;top:-90px;border:1px solid #ffffff18;border-radius:50%;pointer-events:none;}}
-@media(max-width:900px){{.registration-heading{{padding:19px;}}.registration-form-card{{padding:19px;}}}}
-@media(max-width:600px){{.registration-heading{{gap:10px;padding:16px;border-radius:17px;margin-bottom:14px;}}.registration-heading-icon{{width:37px;height:37px;flex-basis:37px;font-size:18px;border-radius:12px;}}.registration-heading-title{{font-size:18px;}}.registration-heading-copy{{font-size:11px;}}.registration-form-card{{padding:17px 15px;border-radius:17px;}}.registration-helper{{font-size:10px;}}}}
+/* Registration screen inspired by the user's reference layout. */
+.registration-topbar{{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 13px;}}
+.registration-topbar .brand{{margin:0;}}
+.registration-step-badge{{display:inline-flex;align-items:center;justify-content:center;padding:5px 11px;border-radius:99px;background:#DCEBFF;color:#2782F5;font-size:11px;font-weight:800;white-space:nowrap;}}
+.registration-progress-track{{height:6px;width:100%;overflow:hidden;border-radius:99px;background:#FFFFFF;margin:0 0 15px;}}
+.registration-progress-fill{{height:100%;border-radius:99px;background:linear-gradient(90deg,#4263EB,#7C5CFA);}}
+.st-key-registration_layout [data-testid="stHorizontalBlock"]{{align-items:stretch;gap:14px;}}.st-key-registration_layout [data-testid="column"]{{min-width:0;}}
+.registration-hero{{position:relative;isolation:isolate;overflow:hidden;min-height:269px;height:100%;padding:18px 17px;border-radius:19px;background:#2948BA;color:#fff;box-shadow:0 10px 24px #203e9b12;}}
+.registration-kicker{{display:inline-flex;align-items:center;padding:5px 9px;border-radius:99px;background:#173A9A;color:#fff;font-size:10px;font-weight:800;letter-spacing:.45px;}}
+.registration-hero h1{{position:relative;z-index:2;font-family:'Poppins',sans-serif;font-size:22px;line-height:1.25;font-weight:800;color:#fff;margin:24px 0 6px;letter-spacing:-.35px;}}
+.registration-hero p{{position:relative;z-index:2;max-width:95%;font-size:13px;line-height:1.65;color:#F0F4FF;margin:0;}}
+.registration-mascot-frame{{position:absolute;z-index:1;right:13px;bottom:13px;width:52%;height:44%;min-height:105px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:17px;background:#fff;}}
+.registration-mascot-frame img{{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:none!important;border-radius:0!important;box-shadow:none!important;}}
+.registration-mascot-frame .welcome-mascot-pair{{position:static;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;}}
+.registration-mascot-frame .welcome-mascot-pair img{{width:52%;height:100%;object-fit:contain;}}
+.st-key-registration_form_container{{height:100%;min-height:269px;padding:17px 15px 14px;border:1px solid #DCE5F6;border-radius:19px;background:rgba(255,255,255,.97);box-shadow:0 8px 24px #1a367308;}}
+.registration-heading{{display:block;padding:0;margin:0 0 14px;border:0;border-radius:0;background:transparent;box-shadow:none;}}
+.registration-heading-title{{font-family:'Poppins',sans-serif;font-size:18px;font-weight:700;line-height:1.35;color:#203766;margin:0 0 6px;}}
+.registration-heading-copy{{font-size:12px;line-height:1.65;color:#7B8AA9;margin:0;}}
+.st-key-registration_form_container [data-testid="stTextInput"]{{margin-top:0;margin-bottom:10px;}}
+.st-key-registration_form_container [data-testid="stTextInput"] label{{font-size:12px;font-weight:700;color:#3F5074;margin-bottom:5px;}}
+.st-key-registration_form_container div[data-baseweb="input"]{{background:#fff;border:1px solid #D8E3F8;border-radius:10px;transition:border-color .18s ease,box-shadow .18s ease;}}
+.st-key-registration_form_container div[data-baseweb="input"]:focus-within{{border-color:#6496F7;box-shadow:0 0 0 3px #4263EB14;}}
+.st-key-registration_form_container div[data-baseweb="input"] input{{background:transparent!important;min-height:39px;color:#172033;font-size:12px;}}
+.registration-nav{{margin-top:0;}}
+.st-key-registration_nav_container .stButton button{{min-height:48px!important;border-radius:17px!important;font-weight:700!important;}}
+.st-key-registration_nav_container button[kind="secondary"]{{background:#fff!important;border:1px solid #DCE5F6!important;color:#344B78!important;}}
+.st-key-registration_nav_container button[kind="primary"]{{background:#168BF2!important;background-image:none!important;border:1px solid #168BF2!important;color:#fff!important;box-shadow:0 7px 16px #168bf222!important;}}
+.st-key-registration_nav_container button[kind="primary"]:hover{{background:#0878DD!important;transform:translateY(-1px);}}
+@media(max-width:900px){{.registration-hero,.st-key-registration_form_container{{min-height:250px;}}.registration-hero{{padding:17px 15px;}}.registration-hero h1{{font-size:20px;margin-top:22px;}}.registration-mascot-frame{{width:57%;height:40%;}}.st-key-registration_form_container{{padding:16px 13px;}}}}
+@media(max-width:700px){{.registration-topbar .brand-icon{{width:45px;height:45px;flex-basis:45px;}}.registration-topbar .brand-name{{font-size:20px;}}.registration-topbar .brand-sub{{font-size:9px;}}.registration-step-badge{{font-size:10px;padding:5px 8px;}}.st-key-registration_layout [data-testid="stHorizontalBlock"]{{flex-direction:column!important;gap:14px!important;}}.st-key-registration_layout [data-testid="column"]{{width:100%!important;flex:1 1 100%!important;}}.registration-hero{{min-height:245px;}}.st-key-registration_form_container{{min-height:0;margin-top:0;}}.registration-mascot-frame{{width:48%;height:42%;right:12px;bottom:12px;}}.registration-hero h1{{max-width:65%;font-size:21px;}}.registration-hero p{{max-width:65%;font-size:12px;}}.st-key-registration_nav_container .stButton button{{min-height:46px!important;}}}}
+@media(max-width:430px){{.registration-hero{{min-height:225px;}}.registration-hero h1{{font-size:19px;}}.registration-mascot-frame{{width:48%;height:39%;}}.registration-topbar .brand-sub{{letter-spacing:0;}}}}
 .stButton button,.stDownloadButton button{{border-radius:12px;font-weight:800;min-height:44px;border:0;}}
 .analysis-heading{{display:flex;align-items:center;gap:14px;padding:22px 24px;border-radius:22px;background:linear-gradient(115deg,#172554 0%,#2947C7 58%,#536DFF 100%);box-shadow:0 14px 32px #2947c726;color:#fff;margin-bottom:16px;}}
 .analysis-heading .analysis-heading-icon{{width:64px;height:64px;object-fit:contain;flex:0 0 64px;filter:drop-shadow(0 5px 10px #091a5a55);}}
@@ -333,14 +346,22 @@ if "analysis_result" not in st.session_state:
 if "analysis_mode" not in st.session_state:
     st.session_state.analysis_mode = "Klasifikasi CNN"
 
-# Brand + five-stage progress navigation.
+# Brand + progress navigation. Registration gets a compact header matching the reference.
 main_icon_uri = bg_uri(MAIN_ICON_PATH)
 brand_mark = f'<img src="{main_icon_uri}" alt="PawScan icon">' if main_icon_uri else '🐾'
-st.markdown(f'<div class="brand"><div class="brand-icon">{brand_mark}</div><div><div class="brand-name">PawScan</div><div class="brand-sub">ANIMAL RECOGNITION · CNN + YOLO</div></div></div>', unsafe_allow_html=True)
 step = st.session_state.step
 labels = ["Intro", "Registrasi", "Metode", "Unggah & Analisis", "Hasil"]
-progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 6))
-st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
+brand_markup = f'<div class="brand"><div class="brand-icon">{brand_mark}</div><div><div class="brand-name">PawScan</div><div class="brand-sub">ANIMAL RECOGNITION · CNN + YOLO</div></div></div>'
+if step == 2:
+    st.markdown(
+        f'<div class="registration-topbar">{brand_markup}<span class="registration-step-badge">STEP 2/5</span></div>'
+        '<div class="registration-progress-track"><div class="registration-progress-fill" style="width:40%"></div></div>',
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(brand_markup, unsafe_allow_html=True)
+    progress = "".join(f'<div class="progress-step {"active" if i <= step else ""}"></div>' for i in range(1, 6))
+    st.markdown(f'<div class="progress-wrap">{progress}</div><div class="step-label">Sesi {step} dari 5 · {labels[step-1]}</div>', unsafe_allow_html=True)
 
 if step == 1:
     home_mascot_uri = bg_uri(MASCOT_PATH)
@@ -377,67 +398,61 @@ if step == 1:
         go(2)
 
 elif step == 2:
-    left, right = st.columns([1, 1.15], gap="large")
-    with left:
-        mascot_uri = bg_uri(MASCOT_PATH)
-        cat_uri = bg_uri(CAT_ICON_PATH)
-        dog_uri = bg_uri(DOG_ICON_PATH)
-        if mascot_uri:
-            mascot_markup = f'<img class="welcome-mascot-combined" src="{mascot_uri}" alt="Maskot kucing dan anjing PawScan">'
-        else:
-            mascot_items = ""
-            if cat_uri:
-                mascot_items += f'<img src="{cat_uri}" alt="Maskot kucing PawScan">'
-            if dog_uri:
-                mascot_items += f'<img src="{dog_uri}" alt="Maskot anjing PawScan">'
-            mascot_markup = f'<div class="welcome-mascot-pair">{mascot_items}</div>' if mascot_items else ""
-        st.markdown(
-            '<div class="welcome-hero"><div class="welcome-copy">'
-            '<span class="hero-kicker">PAWSCAN MEMBER · 02/05</span>'
-            '<h1>Halo, selamat datang di PawScan!</h1>'
-            '<p>Kenali sahabat berbulu dengan teknologi AI. Lengkapi profil singkatmu untuk melanjutkan ke tahap pemilihan metode.</p>'
-            '</div>' + mascot_markup + '</div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            '<div class="registration-benefit"><span>✓</span><div><b>Proses sederhana</b><br>Isi dua informasi, lalu lanjutkan ke pemilihan metode analisis.</div></div>',
-            unsafe_allow_html=True,
-        )
-    with right:
-        st.markdown(
-            '<div class="registration-heading">'
-            '<div class="registration-heading-icon">✍️</div>'
-            '<div><div class="registration-heading-title">Registrasi Singkat</div>'
-            '<p class="registration-heading-copy">Kenalan dulu, lalu pilih cara PawScan mengenali hewan pada gambarmu.</p></div></div>'
-            '<div class="registration-form-card">',
-            unsafe_allow_html=True,
-        )
-        full_name = st.text_input(
-            "Nama lengkap",
-            value=st.session_state.full_name,
-            placeholder="Masukkan nama lengkap",
-            help="Masukkan nama yang ingin ditampilkan pada ringkasan hasil.",
-            key="registration_full_name",
-        )
-        campus = st.text_input(
-            "Nama kampus",
-            value=st.session_state.campus,
-            placeholder="Masukkan nama universitas atau kampus",
-            help="Masukkan nama universitas atau institusi kamu.",
-            key="registration_campus",
-        )
-        st.markdown(
-            '<div class="registration-helper"><span class="registration-helper-icon">💡</span>'
-            '<div><b>Hampir selesai!</b><br>Pastikan kedua kolom sudah benar. Setelah ini, kamu bisa memilih Klasifikasi CNN atau Deteksi Objek YOLO.</div></div>'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-        st.write("")
-        a, b = st.columns(2, gap="small")
-        with a:
+    with st.container(key="registration_layout"):
+        left, right = st.columns([1, 1], gap="small")
+        with left:
+            mascot_uri = bg_uri(MASCOT_PATH)
+            cat_uri = bg_uri(CAT_ICON_PATH)
+            dog_uri = bg_uri(DOG_ICON_PATH)
+            if mascot_uri:
+                mascot_markup = f'<img src="{mascot_uri}" alt="Maskot kucing dan anjing PawScan">'
+            else:
+                mascot_items = ""
+                if cat_uri:
+                    mascot_items += f'<img src="{cat_uri}" alt="Maskot kucing PawScan">'
+                if dog_uri:
+                    mascot_items += f'<img src="{dog_uri}" alt="Maskot anjing PawScan">'
+                mascot_markup = f'<div class="welcome-mascot-pair">{mascot_items}</div>' if mascot_items else '<span style="font-size:54px">🐱 🐶</span>'
+            st.markdown(
+                '<div class="registration-hero">'
+                '<span class="registration-kicker">AI PET DETECTION</span>'
+                '<h1>Halo, Sobat Paw! <span style="font-size:19px">🐾</span></h1>'
+                '<p>Kenali sahabat berbulu dengan bantuan AI.</p>'
+                f'<div class="registration-mascot-frame">{mascot_markup}</div>'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+        with right:
+            with st.container(key="registration_form_container"):
+                st.markdown(
+                    '<div class="registration-heading">'
+                    '<div class="registration-heading-title">Kenalan dulu, yuk! 👋</div>'
+                    '<p class="registration-heading-copy">Isi identitasmu untuk memulai petualangan bersama PawScan.</p>'
+                    '</div>',
+                    unsafe_allow_html=True,
+                )
+                full_name = st.text_input(
+                    "Nama lengkap",
+                    value=st.session_state.full_name,
+                    placeholder="Masukkan nama lengkap...",
+                    help="Masukkan nama yang ingin ditampilkan pada ringkasan hasil.",
+                    key="registration_full_name",
+                )
+                campus = st.text_input(
+                    "Nama kampus",
+                    value=st.session_state.campus,
+                    placeholder="Masukkan nama kampus...",
+                    help="Masukkan nama universitas atau institusi kamu.",
+                    key="registration_campus",
+                )
+
+    st.write("")
+    with st.container(key="registration_nav_container"):
+        back_col, next_col = st.columns([1, 1], gap="small")
+        with back_col:
             if st.button("← Kembali", use_container_width=True, key="registration_back"):
                 go(1)
-        with b:
+        with next_col:
             if st.button("Lanjutkan →", type="primary", use_container_width=True, key="registration_continue"):
                 if not full_name.strip() or not campus.strip():
                     st.warning("Nama lengkap dan nama kampus perlu diisi terlebih dahulu.")
