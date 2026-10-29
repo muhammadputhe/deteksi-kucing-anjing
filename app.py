@@ -24,7 +24,7 @@ YOLO_CANDIDATES = [
     ROOT / "model" / "Haikal_Laporan 4.pt",
 ]
 YOLO_PATH = next((p for p in YOLO_CANDIDATES if p.exists()), YOLO_CANDIDATES[0])
-YOLO_CONFIDENCE = 0.25
+YOLO_CONFIDENCE = 0.40
 CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
@@ -191,6 +191,9 @@ def yolo_predict(image, model, confidence):
         source=np.asarray(image.convert("RGB")),
         imgsz=640,
         conf=confidence,
+        iou=0.45,              # Ambang IoU untuk Non-Maximum Suppression (NMS)
+        agnostic_nms=False,   # NMS per kelas: kucing dan anjing tetap dibedakan
+        max_det=100,           # Batas maksimum deteksi per gambar
         verbose=False,
     )[0]
 
