@@ -24,7 +24,7 @@ YOLO_CANDIDATES = [
     ROOT / "model" / "Haikal_Laporan 4.pt",
 ]
 YOLO_PATH = next((p for p in YOLO_CANDIDATES if p.exists()), YOLO_CANDIDATES[0])
-YOLO_CONFIDENCE = 0.01  # Mode diagnosis: turunkan ambang untuk melihat prediksi model
+YOLO_CONFIDENCE = 0.40
 CLASSIFIER_PATH = ROOT / "best_model.h5"
 DESKTOP_BG_PATH = ROOT / "background_pawscan.png"
 MOBILE_BG_PATH = ROOT / "background_pawscan_mobile.png"
@@ -606,9 +606,8 @@ elif step == 5:
                         st.dataframe(raw_detections, use_container_width=True)
                     else:
                         st.info(
-                            f"YOLO tidak menghasilkan bounding box pada confidence {result.get('yolo_confidence', YOLO_CONFIDENCE):.2f}. "
-                            "Ambang saat ini sudah rendah untuk diagnosis. Jika tetap kosong, periksa file bobot (.pt) "
-                            "yang dimuat dan apakah model memang menghasilkan bounding box untuk gambar ini."
+                            "YOLO tidak menghasilkan bounding box pada confidence 0.25. "
+                            "Untuk diagnosis sementara, ubah YOLO_CONFIDENCE menjadi 0.01."
                         )
                     summary = (
                         "Belum ada deteksi kucing/anjing yang dapat dipetakan dari hasil model. "
