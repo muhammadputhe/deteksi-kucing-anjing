@@ -1,3 +1,3 @@
 <p align="center">
-  # **🐾 BISMILLAH 100 🐾**
+# **🐾 BISMILLAH 100 🐾**
 </p>
